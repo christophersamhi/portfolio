@@ -7,7 +7,6 @@
 /* BLOCK CAROUSEL
 * -------------------------- */
 .block--carousel {
-
 	.arrows-container {
 		margin-top: vars.$space-between-lg;
 	}
@@ -28,14 +27,16 @@
 			&::before {
 				content: "";
 				display: inline-block;
+				min-width: rem(62);
 				width: rem(62);
+				min-height: rem(50);
 				height: rem(50);
 				background-color: vars.$color-red;
-				-webkit-mask-image: url("../img/icons/quote.svg");
 				mask-image: url("../img/icons/quote.svg");
-				-webkit-mask-repeat: no-repeat;
+				mask-image: url("../img/icons/quote.svg");
 				mask-repeat: no-repeat;
-				-webkit-mask-size: contain;
+				mask-repeat: no-repeat;
+				mask-size: contain;
 				mask-size: contain;
 				margin-bottom: vars.$space-between-lg;
 			}
