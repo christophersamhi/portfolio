@@ -1,0 +1,91 @@
+@use "sass:color";
+@use "variables" as vars;
+@use "mixins" as mix;
+@use "breakpoints" as breakpoints;
+@use "rem" as *;
+
+/* BLOCK MAIN
+* -------------------------- */
+.block--main {
+	padding-top: vars.$padding-6xl;
+	padding-bottom: vars.$padding-2xl;
+
+	&__top {
+		display: flex;
+		gap: vars.$space-between-3xl;
+		align-items: center;
+		padding-bottom: vars.$padding-md;
+
+		&__text {
+			display: flex;
+			flex-direction: column;
+			gap: vars.$space-between-4xl;
+			max-width: 39%;
+		}
+
+		&__img {
+			max-width: 42%;
+			position: relative;
+		}
+
+		p {
+			font-family: vars.$font-playfair-display;
+			font-size: rem(26);
+			font-weight: 400;
+			line-height: 1.2;
+
+			&::before {
+				content: "";
+				display: inline-block;
+				width: rem(28);
+				height: rem(28);
+				background-color: vars.$color-font;
+				-webkit-mask-image: url("../img/icons/arrow-swiper.svg");
+				mask-image: url("../img/icons/arrow-swiper.svg");
+				-webkit-mask-repeat: no-repeat;
+				mask-repeat: no-repeat;
+				-webkit-mask-size: contain;
+				mask-size: contain;
+				transform: rotate(180deg);
+				margin-bottom: rem(-3);
+				margin-right: vars.$padding-sm;
+			}
+		}
+		
+		&__legend {
+			position: absolute;
+			bottom: 23%;
+			right: rem(-43);
+
+			span {
+				display: block;
+				font-size: rem(14);
+				font-weight: 400;
+				line-height: 1.5;
+
+				strong {
+					display: block;
+					color: vars.$color-red;
+					background-color: vars.$color-white;
+					width: fit-content;
+					padding: 0 vars.$padding-xs;
+				}
+
+				span {
+					background-color: vars.$color-white;
+					padding: 0 vars.$padding-xs;
+				}
+			}
+		}
+	}
+
+	&__bottom {
+		border-top: 1px solid currentColor;
+
+		span {
+			display: block;
+			@include mix.h1;
+			margin-left: rem(-16);
+		}
+	}
+}

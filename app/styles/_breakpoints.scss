@@ -1,0 +1,35 @@
+$mobile: 600px;
+$mobile-large: 768px;
+$tablet: 1024px;
+$desktop: 1444px;
+
+:root {
+	--mobile: #{$mobile};
+	--mobile-large: #{$mobile-large};
+	--tablet: #{$tablet};
+	--desktop: #{$desktop};
+}
+
+@mixin mobile {
+	@media only screen and (max-width: $mobile) {
+		@content;
+	}
+}
+
+@mixin mobile-large {
+	@media only screen and (max-width: $mobile-large) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media only screen and (max-width: $tablet) {
+		@content;
+	}
+}
+
+@mixin desktop {
+	@media only screen and (max-width: $desktop) {
+		@content;
+	}
+}

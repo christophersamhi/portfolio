@@ -1,0 +1,93 @@
+@use "sass:color";
+@use "breakpoints" as breakpoints;
+@use "rem" as *;
+
+// Couleurs SCSS
+$color-body: #F9F4F0;
+$color-font: #323232;
+$color-black: #000;
+$color-white: #fff;
+$color-red: #D2132B;
+
+// Fonts SCSS
+$font-open-sans: "Open Sans", sans-serif;
+$font-open-sans-condensed: "Open Sans Condensed", sans-serif;
+$font-playfair-display: "Playfair Display", serif;
+
+// Spacings SCSS
+$space-between-xs: rem(5); // 5px
+$space-between-sm: $space-between-xs * 2; // 10px
+$space-between-md: $space-between-xs * 3; // 15px
+$space-between-lg: $space-between-xs * 4; // 20px
+$space-between-xl: $space-between-xs * 5; // 25px
+$space-between-2xl: $space-between-xs * 6; // 30px
+$space-between-3xl: $space-between-xs * 8; // 40px
+$space-between-4xl: $space-between-xs * 12; // 60px
+$space-between-5xl: $space-between-xs * 20; // 100px
+$space-between-6xl: $space-between-xs * 28; // 140px
+
+// Paddings SCSS
+$padding-xs: rem(5); // 5px
+$padding-sm: $padding-xs * 2; // 10px
+$padding-md: $padding-xs * 3; // 15px
+$padding-lg: $padding-xs * 4; // 20px
+$padding-xl: $padding-xs * 5; // 25px
+$padding-2xl: $padding-xs * 6; // 30px
+$padding-3xl: $padding-xs * 8; // 40px
+$padding-4xl: $padding-xs * 12; // 60px
+$padding-5xl: $padding-xs * 20; // 100px
+$padding-6xl: $padding-xs * 28; // 140px
+
+// Dimensions SCSS
+$max-w-block: rem(1320); // 1320px
+$height-mainHeader: rem(100); // 100px
+
+//Radius
+$border-radius: rem(20);
+$border-radius-full: rem(99999);
+
+:root {
+	// Colors
+	--color-body: #{$color-body};
+	--color-font: #{$color-font};
+	--color-black: #{$color-black};
+	--color-white: #{$color-white};
+	--color-red: #{$color-red};
+
+	// Fonts
+	--font-open-sans: #{$font-open-sans};
+	--font-open-sans-condensed: #{$font-open-sans-condensed};
+	--font-playfair-display: #{$font-playfair-display};
+
+	// Spacings
+	--space-between-xs: #{$space-between-xs};
+	--space-between-sm: #{$space-between-sm};
+	--space-between-md: #{$space-between-md};
+	--space-between-lg: #{$space-between-lg};
+	--space-between-xl: #{$space-between-xl};
+	--space-between-2xl: #{$space-between-2xl};
+	--space-between-3xl: #{$space-between-3xl};
+	--space-between-4xl: #{$space-between-4xl};
+	--space-between-5xl: #{$space-between-5xl};
+	--space-between-6xl: #{$space-between-6xl};
+	
+	// Paddings
+	--padding-xs: #{$padding-xs};
+	--padding-sm: #{$padding-sm};
+	--padding-md: #{$padding-md};
+	--padding-lg: #{$padding-lg};
+	--padding-xl: #{$padding-xl};
+	--padding-2xl: #{$padding-2xl};
+	--padding-3xl: #{$padding-3xl};
+	--padding-4xl: #{$padding-4xl};
+	--padding-5xl: #{$padding-5xl};
+	--padding-6xl: #{$padding-6xl};
+
+	// Max-width & height
+	--max-w-block: #{$max-w-block};
+	--height-mainHeader: #{$height-mainHeader};
+	
+	//Radius
+	--border-radius: #{$border-radius};
+	--border-radius-full: #{$border-radius-full};
+}

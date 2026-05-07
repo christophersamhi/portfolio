@@ -1,0 +1,81 @@
+@use "sass:color";
+@use "variables" as vars;
+@use "mixins" as mix;
+@use "breakpoints" as breakpoints;
+@use "rem" as *;
+
+/* MAINHEADER
+* -------------------------- */
+.mainHeader {
+	@include mix.block;
+	display: flex;
+	padding-top: vars.$padding-xl;
+	padding-bottom: vars.$padding-xl;
+	
+	&__container {
+		display: flex;
+		align-items: center;
+	}
+
+	&__logo {
+		margin-right: auto;
+		display: flex;
+		max-width: rem(50);
+	}
+
+	&__nav {
+		margin-left: vars.$space-between-xl;
+		margin-right: vars.$space-between-5xl;
+
+		ul {
+			display: flex;
+			align-items: center;
+			gap: vars.$space-between-2xl;
+
+			li {
+
+				button,
+				a {
+					display: block;
+					font-size: rem(14);
+					font-weight: 500;
+					line-height: 1.8;
+					letter-spacing: 0.1em;
+					text-transform: uppercase;
+
+					&:active,
+					&:focus-visible,
+					&:hover {
+						text-decoration: underline;
+						text-underline-offset: 2px;
+					}
+				}
+			}
+		}
+	}
+
+	&__languages {
+		display: flex;
+
+		li {
+
+			a {
+				width: rem(40);
+				height: rem(40);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: rem(14);
+				font-weight: 500;
+				line-height: 1.8;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+
+				&.active {
+					border-radius: vars.$border-radius-full;
+					border: 1px solid currentColor;
+				}
+			}
+		}
+	}
+}

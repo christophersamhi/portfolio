@@ -1,0 +1,133 @@
+@use "sass:color";
+@use "variables" as vars;
+@use "mixins" as mix;
+@use "breakpoints" as breakpoints;
+@use "rem" as *;
+
+/* BLOCK CLIENTS
+* -------------------------- */
+.block--clients {
+
+	.block__container {
+		display: flex;
+		align-items: center;
+
+		> h2 {
+			margin-right: vars.$space-between-4xl;
+			// max-width: rem(298);
+			// width: 100%;
+			flex: none;
+		}
+	}
+
+	&__swiper-container {
+		width: 100%;
+		display: flex;
+		gap: vars.$space-between-2xl;
+		max-width: rem(390);
+	}
+
+	.arrows-container {
+		flex-direction: column;
+	}
+
+	.swiper-arrow {
+
+		&--prev {
+			transform: rotate(90deg);
+		}
+
+		&--next {
+			transform: rotate(270deg);
+		}
+	}
+
+	.swiper {
+		width: 100%;
+
+		&--main {
+			margin-right: vars.$space-between-2xl;
+			min-width: fit-content;
+
+			* {
+				font-size: rem(70);
+				line-height: 1.2;
+			}
+
+			.swiper-slide {
+				width: fit-content !important;
+				padding-left: rem(90);
+
+				button {
+					font-family: vars.$font-playfair-display;
+					display: block;
+					transition: .3s color;
+
+					&:hover,
+					&:focus-visible {
+						font-style: italic;
+						color: vars.$color-red;
+					}
+				}
+				
+				&:last-of-type {
+					margin-bottom: 0 !important;
+				}
+
+				&.swiper-slide-thumb-active {
+
+					button {
+						font-style: italic;
+						color: vars.$color-red;
+						pointer-events: none;
+					}
+
+					&::before {
+						content: "";
+						display: inline-block;
+						width: rem(60);
+						height: rem(59);
+						background-color: vars.$color-red;
+						-webkit-mask-image: url("../img/icons/arrow-red.svg");
+						mask-image: url("../img/icons/arrow-red.svg");
+						-webkit-mask-repeat: no-repeat;
+						mask-repeat: no-repeat;
+						-webkit-mask-size: contain;
+						mask-size: contain;
+						position: absolute;
+						left: 0;
+						top: rem(12);
+					}	
+				}
+			}
+		}
+
+		&--thumbs {
+			max-height: rem(660);
+			width: 100%;
+			border-radius: vars.$border-radius;
+
+			.swiper-slide {
+				display: flex;
+				flex-direction: column;
+
+				&--top {
+					background-color: vars.$color-white;
+					height: 50%;
+					border-radius: vars.$border-radius vars.$border-radius 0 0;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				&--bottom {
+					height: calc(50% + #{vars.$border-radius});
+					border-radius: vars.$border-radius;
+					margin-top: calc(0px - #{vars.$border-radius});
+					background-color: vars.$color-font;
+					color: vars.$color-white;
+				}
+			}
+		}
+	}
+}
