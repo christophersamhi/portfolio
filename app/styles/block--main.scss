@@ -21,6 +21,12 @@
 			flex-direction: column;
 			gap: vars.$space-between-4xl;
 			max-width: 39%;
+
+			> span {
+				display: block;
+
+				@include mix.h1;
+			}
 		}
 
 		&__img {
@@ -40,18 +46,18 @@
 				width: rem(28);
 				height: rem(28);
 				background-color: vars.$color-font;
-				-webkit-mask-image: url("../img/icons/arrow-swiper.svg");
 				mask-image: url("../img/icons/arrow-swiper.svg");
-				-webkit-mask-repeat: no-repeat;
+				mask-image: url("../img/icons/arrow-swiper.svg");
 				mask-repeat: no-repeat;
-				-webkit-mask-size: contain;
+				mask-repeat: no-repeat;
+				mask-size: contain;
 				mask-size: contain;
 				transform: rotate(180deg);
 				margin-bottom: rem(-3);
 				margin-right: vars.$padding-sm;
 			}
 		}
-		
+
 		&__legend {
 			position: absolute;
 			bottom: 23%;
@@ -80,11 +86,13 @@
 	}
 
 	&__bottom {
-		border-top: 1px solid currentColor;
+		border-top: 1px solid currentcolor;
 
 		span {
 			display: block;
+
 			@include mix.h1;
+
 			margin-left: rem(-16);
 		}
 	}

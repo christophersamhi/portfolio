@@ -1,108 +1,112 @@
 import $ from "jquery/dist/jquery.min.js";
 
-$(document).ready(function () {
+export function initContactForm() {
+    const $openBtn = $(".contact-form__open");
+    const $closeBtn = $(".contact-form__close");
+    const $container = $(".contact-form__hidden");
+    const $openFormTrigger = $(".open-contact-form");
 
-    $.get("./components/contact-form.html", function (data) {
-        $(".contact-form-placeholder").replaceWith(data);
-        
-        const $openBtn = $('.contact-form__open');
-        const $closeBtn = $('.contact-form__close');
-        const $container = $('.contact-form__hidden');
+    let $focusable = $();
+    let $first = $();
+    let $last = $();
 
-        let $focusable;
-        let $first;
-        let $last;
+    function getFocusable() {
+        return $container
+            .find("a, button, input, textarea, select, [tabindex]")
+            .filter(":visible")
+            .filter(function () {
+                return !$(this).is("[disabled]");
+            });
+    }
 
-        function getFocusable() {
-            return $container
-                .find('a, button, input, textarea, select, [tabindex]')
-                .filter(':visible')
-                .filter(function () {
-                    return !$(this).is('[disabled]');
-                });
-        }
+    function refreshFocusable() {
+        $focusable = getFocusable();
+        $first = $focusable.first();
+        $last = $focusable.last();
+    }
 
-        function disableFocusables() {
-            const $items = getFocusable();
-
-            $items.each(function () {
+    function disableFocusables() {
+        $container
+            .find("a, button, input, textarea, select, [tabindex]")
+            .each(function () {
                 const $el = $(this);
 
-                if ($el.data('orig-tabindex') === undefined) {
-                    $el.data('orig-tabindex', $el.attr('tabindex'));
+                if ($el.data("orig-tabindex") === undefined) {
+                    $el.data("orig-tabindex", $el.attr("tabindex"));
                 }
 
-                $el.attr('tabindex', '-1');
+                $el.attr("tabindex", "-1");
             });
-        }
+    }
 
-        function enableFocusables() {
-            const $items = $container.find(
-                'a, button, input, textarea, select, [tabindex]'
-            );
-
-            $items.each(function () {
+    function enableFocusables() {
+        $container
+            .find("a, button, input, textarea, select, [tabindex]")
+            .each(function () {
                 const $el = $(this);
-                const original = $el.data('orig-tabindex');
+                const original = $el.data("orig-tabindex");
 
                 if (original === undefined || original === null) {
-                    $el.removeAttr('tabindex');
+                    $el.removeAttr("tabindex");
                 } else {
-                    $el.attr('tabindex', original);
+                    $el.attr("tabindex", original);
                 }
             });
+
+        refreshFocusable();
+    }
+
+    function trapFocus(e) {
+        if (e.key === "Escape") {
+            closeForm();
+            return;
         }
 
-        function openForm() {
-            $container.attr('aria-hidden', 'false');
-            $openBtn.attr('aria-expanded', 'true');
-            $openBtn.attr('tabindex', '-1');
+        if (e.key !== "Tab" || !$focusable.length) return;
 
-            enableFocusables();
+        if (e.shiftKey) {
+            if (document.activeElement === $first[0]) {
+                e.preventDefault();
+                $last.focus();
+            }
+        } else {
+            if (document.activeElement === $last[0]) {
+                e.preventDefault();
+                $first.focus();
+            }
+        }
+    }
 
-            $focusable = getFocusable();
-            $first = $focusable.first();
-            $last = $focusable.last();
+    function openForm() {
+        $container.attr("aria-hidden", "false");
+        $openBtn.attr("aria-expanded", "true").attr("tabindex", "-1");
+
+        enableFocusables();
+        refreshFocusable();
+
+        if ($first.length) {
             $first.focus();
-
-            $(document).on('keydown.trap', function (e) {
-                if (e.key === 'Escape') {
-                    closeForm();
-                    return;
-                }
-
-                if (e.key !== 'Tab') return;
-
-                if (e.shiftKey) {
-                    if (document.activeElement === $first[0]) {
-                        e.preventDefault();
-                        $last.focus();
-                    }
-                } else {
-                    if (document.activeElement === $last[0]) {
-                        e.preventDefault();
-                        $first.focus();
-                    }
-                }
-            });
         }
 
-        function closeForm() {
-            $container.attr('aria-hidden', 'true');
-            $openBtn.attr('aria-expanded', 'false');
-            $openBtn.removeAttr('tabindex');
+        $(document).on("keydown.trap", trapFocus);
+    }
 
-            $(document).off('keydown.trap');
-            disableFocusables();
-            $openBtn.focus();
-        }
+    function closeForm() {
+        $container.attr("aria-hidden", "true");
+        $openBtn.attr("aria-expanded", "false").removeAttr("tabindex");
 
-        $(document).on('click', '.contact-form__open', openForm);
-        $(document).on('click', '.open-contact-form', function (e) {
-            e.preventDefault();
-            openForm();
-        });
-        $(document).on('click', '.contact-form__close', closeForm);
+        $(document).off("keydown.trap");
         disableFocusables();
-    });
-});
+
+        $openBtn.focus();
+    }
+
+    /* EVENTS */
+    $openBtn.on("click", openForm);
+    $closeBtn.on("click", closeForm);
+
+    $openFormTrigger.on("click", openForm);
+
+    /* INIT */
+    disableFocusables();
+}
