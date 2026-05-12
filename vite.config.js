@@ -52,7 +52,6 @@ export default defineConfig({
         {
             name: "copy-minified-html",
             async closeBundle() {
-                // tous les fichiers html à minifier : racine + components (et sous-dossiers)
                 const htmlFiles = [
                     ...sync("app/*.html"),
                     ...sync("app/components/**/*.html"),
@@ -60,8 +59,6 @@ export default defineConfig({
 
                 for (const file of htmlFiles) {
                     let content = fs.readFileSync(file, "utf-8");
-
-                    // remplacer tous les href="... .scss" -> .css (gestion de tous les chemins)
                     content = content.replace(
                         /href="([^"]+)\.scss"/g,
                         'href="$1.css"',
@@ -74,7 +71,6 @@ export default defineConfig({
                         minifyJS: true,
                     });
 
-                    // conserver la structure relative (ex: components/card/foo.html -> dist/components/card/foo.html)
                     const relative = path.relative(path.resolve("app"), file);
                     const dest = path.resolve(__dirname, "dist", relative);
 
@@ -82,7 +78,6 @@ export default defineConfig({
                     fs.writeFileSync(dest, minified);
                 }
 
-                // Copier les assets du dossier img (comme avant)
                 const imgFiles = sync("app/img/**/*.*");
                 for (const img of imgFiles) {
                     const relative = path.relative(path.resolve("app"), img);
@@ -91,8 +86,6 @@ export default defineConfig({
                     fs.copyFileSync(img, destPath);
                 }
 
-                // Copier autres assets présents dans app/components (images, css locaux, etc.)
-                // Exclure explicitement les .html (déjà traités)
                 const compAssets = sync("app/components/**/*.*").filter(
                     (p) => !p.endsWith(".html"),
                 );
