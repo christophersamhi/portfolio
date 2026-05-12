@@ -32,6 +32,7 @@ function loadComponent(url, placeholderSelector, callback) {
 
 // Animations
 function initAnimations() {
+    // Animations intro
     const tlIntro = gsap.timeline({
         delay: 0.3,
     });
@@ -69,6 +70,7 @@ function initAnimations() {
         "-=0.35",
     );
 
+    // Animations blocks
     const $blocks = $(".block:not(.block--main)");
 
     $blocks.each(function () {
@@ -94,7 +96,7 @@ function initAnimations() {
     ScrollTrigger.refresh();
 }
 
-// Load all components
+// Load components
 Promise.all([
     loadComponent("./components/header.html", ".header-placeholder"),
     loadComponent("./components/footer.html", ".footer-placeholder"),
@@ -135,7 +137,4 @@ Promise.all([
 
         return true;
     })
-    .catch((err) => {
-        console.error("Component loading failed:", err);
-        return false;
-    });
+    .catch(() => {});
