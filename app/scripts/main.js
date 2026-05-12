@@ -34,40 +34,54 @@ function loadComponent(url, placeholderSelector, callback) {
 function initAnimations() {
     // Animations intro
     const tlIntro = gsap.timeline({
-        delay: 0.3,
+        delay: 0.1,
     });
 
-    tlIntro.fromTo(
+    tlIntro.addLabel("start");
+
+    tlIntro.from(
         ".block--main__top p",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
+        {
+            opacity: 0,
+            y: 20,
+            duration: 0.7,
+            ease: "power2.out",
+        },
+        "start",
     );
 
-    tlIntro.fromTo(
+    tlIntro.from(
         ".block--main__top__text > span",
-        { opacity: 0, y: 20 },
         {
-            opacity: 1,
-            y: 0,
+            opacity: 0,
+            y: 20,
             duration: 0.6,
             stagger: 0.06,
             ease: "power2.out",
         },
-        "-=0.25",
+        "start+=0.15",
     );
 
-    tlIntro.fromTo(
+    tlIntro.from(
         ".block--main__bottom",
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-        "-=0.2",
+        {
+            opacity: 0,
+            y: 25,
+            duration: 0.7,
+            ease: "power2.out",
+        },
+        "start+=0.30",
     );
 
-    tlIntro.fromTo(
+    tlIntro.from(
         ".block--main__top__img",
-        { opacity: 0, scale: 0.96 },
-        { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.35",
+        {
+            opacity: 0,
+            scale: 0.96,
+            duration: 0.8,
+            ease: "power3.out",
+        },
+        "start+=0.45",
     );
 
     // Animations blocks
@@ -78,11 +92,11 @@ function initAnimations() {
 
         gsap.fromTo(
             $block,
-            { opacity: 0, y: 40 },
+            { opacity: 0, y: 120 },
             {
                 opacity: 1,
                 y: 0,
-                duration: 1,
+                duration: 1.4,
                 ease: "power2.out",
                 scrollTrigger: {
                     trigger: $block[0],

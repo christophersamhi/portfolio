@@ -9,6 +9,10 @@
 .mainHeader {
 	@include mix.block;
 
+	position: fixed;
+	width: 100%;
+	background-color: vars.$color-body;
+	z-index: 100;
 	display: flex;
 	padding-top: vars.$padding-xl;
 	padding-bottom: vars.$padding-xl;
