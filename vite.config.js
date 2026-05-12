@@ -21,11 +21,27 @@ export default defineConfig({
             output: {
                 entryFileNames: "scripts/[name].js",
                 chunkFileNames: "scripts/[name].js",
-                assetFileNames: ({ name }) => {
-                    if (!name) return "[name].[ext]";
-                    if (/\.(png|jpe?g|gif|svg|webp)$/.test(name))
+                assetFileNames: (assetInfo) => {
+                    const fileName = assetInfo.name || "";
+                    const ext = path.extname(fileName);
+
+                    const isImage = /\.(png|jpe?g|gif|svg|webp)$/.test(
+                        fileName,
+                    );
+                    const isCss =
+                        ext === ".css" ||
+                        fileName.includes("swiper") ||
+                        fileName.includes("style");
+
+                    if (isImage) {
                         return "img/[name][extname]";
-                    return "[name].[ext]";
+                    }
+
+                    if (isCss) {
+                        return "styles/[name][extname]";
+                    }
+
+                    return "[name][extname]";
                 },
                 manualChunks: undefined,
             },
