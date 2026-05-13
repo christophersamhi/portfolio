@@ -92,7 +92,7 @@ function initAnimations() {
         const $block = $(this);
 
         gsap.fromTo(
-            $block,
+            $block.find(".block__container"),
             { opacity: 0, y: 120 },
             {
                 opacity: 1,
@@ -101,8 +101,9 @@ function initAnimations() {
                 ease: "power2.out",
                 scrollTrigger: {
                     trigger: $block[0],
-                    start: "top 85%",
+                    start: "top+=100 85%",
                     toggleActions: "play none none none",
+                    markers: true,
                 },
             },
         );
