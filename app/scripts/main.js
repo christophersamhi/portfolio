@@ -5,8 +5,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { initContactForm } from "./contact-form.js";
 import { initBlockClients } from "./block--clients.js";
 import { initBlockCarousel } from "./block--carousel.js";
+import Lenis from "@studio-freight/lenis";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const lenis = new Lenis({
+    duration: 1.5,
+    smoothWheel: true,
+});
+
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
 
 // Load component
 function loadComponent(url, placeholderSelector, callback) {
