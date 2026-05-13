@@ -9,18 +9,6 @@ import Lenis from "@studio-freight/lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const lenis = new Lenis({
-    duration: 1.5,
-    smoothWheel: true,
-});
-
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
-
-requestAnimationFrame(raf);
-
 // Load component
 function loadComponent(url, placeholderSelector, callback) {
     return new Promise((resolve, reject) => {
@@ -161,6 +149,19 @@ Promise.all([
         $("body").css("opacity", 1);
 
         initAnimations();
+
+        const lenis = new Lenis({
+            duration: 1.5,
+            smoothWheel: true,
+        });
+
+        lenis.on("scroll", ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
 
         return true;
     })
