@@ -103,7 +103,7 @@ function initAnimations() {
                     trigger: $block[0],
                     start: "top+=100 85%",
                     toggleActions: "play none none none",
-                    markers: true,
+                    markers: false,
                 },
             },
         );
