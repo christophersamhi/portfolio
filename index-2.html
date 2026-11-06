@@ -1,0 +1,796 @@
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three.js Hover Debug Stable</title>
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<style>
+body{margin:0;overflow:hidden;background:#222;font-family:Arial;}
+canvas{display:block;}
+#loading-screen{
+    position:fixed;inset:0;display:flex;justify-content:center;align-items:center;flex-direction:column;
+    background:#2a0f4e;color:white;z-index:3000;border:8px solid #2a0f4e;border-radius:48px;
+    transform:perspective(1000px);top:50%;left:50%;width:108vw;height:108vh;margin-left:-54vw;margin-top:-54vh;
+    overflow:hidden;
+}
+#enter, #enter-silent{
+    opacity:0;padding:14px 40px;border:4px solid #2a0f4e;background:#401d49;color:#e6dede;
+    cursor:default;font-size:18px;border-radius:12px;transition:transform .4s cubic-bezier(.34,1.56,.64,1),background .3s,color .3s,border-color .3s;
+    margin: 10px 0;
+}
+#enter:hover, #enter-silent:hover{transform:scale(1.12);}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;z-index:10000;}
+.modal-content{background:#2a0f4e;color:white;padding:30px;border-radius:12px;position:relative;max-width:95%;max-height:92vh;overflow:auto;z-index:10001;pointer-events:auto;}
+.closeModal{position:absolute;right:10px;top:8px;background:transparent;border:none;color:white;font-size:18px;cursor:pointer;}
+.mute-toggle-button{position:fixed;top:36px;right:148px;z-index:2;cursor:pointer;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.mute-toggle-button:hover{transform:rotate(-5deg) scale(1.3);}
+.sound-svg,.sound-off-svg{width:40px;height:40px;stroke:purple;}
+.sound-off-svg{display:none;}
+.toggle-buttons{border:8px solid purple;background-color:orange;padding:10px;color:purple;border-radius:1.2rem;cursor:pointer;box-shadow:rgba(0,0,0,0.24) 0px 3px 8px;}
+
+/* Swiper */
+.swiper { width: 100%; padding: 20px 0; pointer-events: auto; }
+.swiper-slide { display: flex; justify-content: center; align-items: center; }
+.swiper-slide img { max-width: 100%; max-height: 70vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); object-fit: cover; }
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: white;
+    background: rgba(106, 27, 154, 0.8);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: 50%;
+    margin-top: -25px;
+    z-index: 10002;
+    pointer-events: auto !important;
+}
+.swiper-button-next:after,
+.swiper-button-prev:after { font-size: 24px; }
+.swiper-pagination { z-index: 10002; }
+</style>
+</head>
+<body>
+
+<div id="loading-screen">
+    <h2>Loading...</h2>
+    <button id="enter" disabled="">Loading...</button>
+    <button id="enter-silent" disabled="">Enter (sans son)</button>
+</div>
+
+<button class="mute-toggle-button toggle-buttons">
+    <svg width="800" height="800" viewBox="0 0 800 800" fill="none" class="sound-svg sound-off-svg" xmlns="http://www.w3.org/2000/svg">
+        <path d="M366.064 567.04C430.064 624 508.464 663.04 545.584 650.56C612.784 625.6 623.984 490.557 623.984 397.117C623.984 371.197 623.984 341.76 620.464 312.641" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M596.134 200.963C592.038 188.521 585.44 177.047 576.746 167.252C568.051 157.456 557.443 149.545 545.578 144.002C506.218 129.282 422.698 175.999 353.578 237.119H302.375C268.427 237.119 235.87 250.606 211.865 274.611C187.86 298.616 174.375 331.171 174.375 365.12V429.12C174.365 453.795 181.488 477.952 194.887 498.672C208.285 519.395 227.387 535.802 249.894 545.92" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M720 77.4414L80 717.44" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg width="800" height="800" viewBox="0 0 800 800" fill="none" class="sound-svg sound-on-svg" xmlns="http://www.w3.org/2000/svg">
+        <path d="M417.578 144.002C378.218 129.282 294.696 175.999 225.576 237.119H174.375C140.427 237.119 107.87 250.606 83.8653 274.611C59.8605 298.616 46.375 331.171 46.375 365.12V429.12C46.375 463.066 59.8605 495.626 83.8653 519.632C107.87 543.635 140.427 557.12 174.375 557.12H225.576C293.096 619.2 376.618 664.96 417.578 650.56C484.778 625.6 495.974 490.56 495.974 397.12C495.974 303.679 484.778 168.962 417.578 144.002Z" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M677.127 215.039C725.098 263.044 752.049 328.134 752.049 396C752.049 463.866 725.098 528.957 677.127 576.96" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M609.252 510.4C639.246 480.394 656.097 439.703 656.097 397.277C656.097 354.851 639.246 314.165 609.252 284.16" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+</button>
+
+<!-- Modal Projets -->
+<div id="modal-projet" class="modal">
+    <div class="modal-content">
+        <button class="closeModal">✕</button>
+        <h2 id="title-projet"></h2>
+    </div>
+</div>
+
+<!-- Modal About -->
+<div id="modal-about" class="modal">
+    <div class="modal-content">
+        <button class="closeModal">✕</button>
+        <h2 id="title-about">About</h2>
+    </div>
+</div>
+
+<!-- Modal My Work -->
+<div id="modal-work" class="modal">
+    <div class="modal-content">
+        <button class="closeModal">✕</button>
+        <h2 id="title-work">My Work</h2>
+
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="https://picsum.photos/id/1015/1200/800" alt="Project 1"></div>
+                <div class="swiper-slide"><img src="https://picsum.photos/id/102/1200/800" alt="Project 2"></div>
+                <div class="swiper-slide"><img src="https://picsum.photos/id/106/1200/800" alt="Project 3"></div>
+                <div class="swiper-slide"><img src="https://picsum.photos/id/201/1200/800" alt="Project 4"></div>
+                <div class="swiper-slide"><img src="https://picsum.photos/id/237/1200/800" alt="Project 5"></div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Contact -->
+<div id="modal-contact" class="modal">
+    <div class="modal-content">
+        <button class="closeModal">✕</button>
+        <h2 id="title-contact">Contact</h2>
+    </div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.179.1/build/three.module.js"}}
+</script>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script type="module">
+import { Howl } from "https://cdn.jsdelivr.net/npm/howler@2.2.4/+esm";
+// Une seule instance de THREE (via l'importmap) pour éviter les conflits avec OrbitControls
+import * as THREE from 'three';
+import { OrbitControls } from './util/OrbitControls.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/loaders/GLTFLoader.js';
+import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm';
+
+let scene, camera, renderer, controls, raycaster, pointer;
+let model, hitboxes = [], currentHover = null;
+let isLoaded = false, isModalOpen = false, clickBlocked = false;
+let video, videoTexture, chairTop = null;
+let xAxisFans = [], yAxisFans = [];
+let state = "loading";
+
+let logCameraInterval = null;
+let isCameraLogging = true;
+let objectsNeedingDelayedHitboxes = [];
+
+// Variables pour animation
+let plank1, plank2, workBtn, aboutBtn, contactBtn;
+
+// Direction de vue initiale (caméra -> cible) conservée de ton ancien réglage :
+// caméra (11.830, -9.813, 12.882) - cible (2.029, -14.167, 2.835)
+const VIEW_DIRECTION = new THREE.Vector3(11.830 - 2.029, -9.813 + 14.167, 12.882 - 2.835).normalize();
+
+// Marge de cadrage : > 1 = plus de recul, < 1 = plus de zoom
+const FRAMING_MARGIN = 1.3;
+
+const textureLoader = new THREE.TextureLoader();
+
+const firstTexture = textureLoader.load("first.jpg");
+const secondTexture = textureLoader.load("second.jpg");
+const thirdTexture = textureLoader.load("third.jpg");
+const fifthTexture = textureLoader.load("fifth.jpg");
+const sixthTexture = textureLoader.load("sixth.jpg");
+const sevenTexture = textureLoader.load("seven.jpg");
+const eightTexture = textureLoader.load("eight.jpg");
+const nineTexture = textureLoader.load("nine.jpg");
+const backgroundTexture = textureLoader.load("background.jpg");
+
+[
+    firstTexture,
+    secondTexture,
+    thirdTexture,
+    fifthTexture,
+    sixthTexture,
+    sevenTexture,
+    eightTexture,
+    nineTexture,
+    backgroundTexture
+].forEach(texture => {
+    texture.flipY = false;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.minFilter = THREE.LinearMipMapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.anisotropy = 16;
+});
+
+//--------------------------------------------------
+// MATERIAUX
+//--------------------------------------------------
+const makeMaterial = (map) => new THREE.MeshStandardMaterial({ map, roughness: 0.65, metalness: 0.05 });
+
+const firstMaterial = makeMaterial(firstTexture);
+const secondMaterial = makeMaterial(secondTexture);
+const thirdMaterial = makeMaterial(thirdTexture);
+const fifthMaterial = makeMaterial(fifthTexture);
+const sixthMaterial = makeMaterial(sixthTexture);
+const sevenMaterial = makeMaterial(sevenTexture);
+const eightMaterial = makeMaterial(eightTexture);
+const nineMaterial = makeMaterial(nineTexture);
+const backgroundMaterial = makeMaterial(backgroundTexture);
+
+const mySwiper = new Swiper(".mySwiper", {
+    loop: true,
+    speed: 600,
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev"
+    },
+    keyboard: {
+        enabled: true
+    },
+    grabCursor: true,
+});
+
+function updateMuteIcon() {
+    const soundOn = document.querySelector(".sound-on-svg");
+    const soundOff = document.querySelector(".sound-off-svg");
+    soundOn.style.display = isMuted ? "none" : "block";
+    soundOff.style.display = isMuted ? "block" : "none";
+}
+
+// ================= CADRAGE AUTOMATIQUE DE LA CAMERA =================
+function frameModel(object) {
+    object.updateWorldMatrix(true, true);
+
+    const box = new THREE.Box3().setFromObject(object);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    // On cadre selon la hauteur ET la largeur (tient compte de l'aspect de l'écran)
+    const vFov = THREE.MathUtils.degToRad(camera.fov);
+    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+
+    const sphereRadius = size.length() / 2; // rayon de la sphère englobante
+    const distV = sphereRadius / Math.sin(vFov / 2);
+    const distH = sphereRadius / Math.sin(hFov / 2);
+    const distance = Math.max(distV, distH) * FRAMING_MARGIN;
+
+    camera.position.copy(center).addScaledVector(VIEW_DIRECTION, distance);
+    camera.near = Math.max(distance / 100, 0.01);
+    camera.far = distance * 20;
+    camera.updateProjectionMatrix();
+
+    controls.target.copy(center);
+    controls.minDistance = distance * 0.4;
+    controls.maxDistance = distance * 1.5;
+    controls.update();
+
+    console.log("[frameModel] size:", size, "center:", center, "distance:", distance.toFixed(2));
+}
+
+function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 200);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.minPolarAngle = 0;
+    controls.maxPolarAngle = Math.PI / 2;
+    controls.minAzimuthAngle = 0;
+    controls.maxAzimuthAngle = Math.PI / 2;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Position provisoire : elle sera remplacée par frameModel() dès que le modèle est chargé
+    camera.position.set(11.830, -9.813, 12.882);
+    controls.target.set(2.029, -14.167, 2.835);
+    controls.update();
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const light = new THREE.DirectionalLight(0xffffff, 1.4);
+    light.position.set(5, 10, 50);
+    scene.add(light);
+
+    raycaster = new THREE.Raycaster();
+    pointer = new THREE.Vector2();
+
+    const manager = new THREE.LoadingManager();
+    manager.onLoad = () => {
+        state = "ready";
+        const btn = document.getElementById("enter");
+        const silentBtn = document.getElementById("enter-silent");
+
+        btn.disabled = false;
+        silentBtn.disabled = false;
+        btn.textContent = "Enter";
+        silentBtn.textContent = "Enter (sans son)";
+
+        btn.style.cursor = "pointer";
+        silentBtn.style.cursor = "pointer";
+        silentBtn.style.border = "4px solid #2a0f4e";
+        silentBtn.style.background = "#401d49";
+        silentBtn.style.color = "#e6dede";
+        silentBtn.style.boxShadow = "rgba(0,0,0,.24) 0px 3px 8px";
+
+        gsap.fromTo(btn, {opacity:0, scale:0.8}, {opacity:1, scale:1, duration:0.6, ease:"back.out(1.8)"});
+        gsap.fromTo(silentBtn, {opacity:0, scale:0.8}, {opacity:1, scale:1, duration:0.6, ease:"back.out(1.8)", delay: 0.2});
+    };
+
+    const loader = new GLTFLoader(manager);
+    loader.load("scene.glb", (gltf) => {
+        model = gltf.scene;
+        scene.add(model);
+
+        // Recentre le modèle à l'origine
+        const box = new THREE.Box3().setFromObject(model);
+        model.position.sub(box.getCenter(new THREE.Vector3()));
+
+        // Cadre la caméra sur le modèle (AVANT que les objets d'intro soient mis à l'échelle 0)
+        frameModel(model);
+
+        video = document.createElement("video");
+        video.src = "video.mp4";
+        video.crossOrigin = "anonymous";
+        video.loop = true;
+        video.muted = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.play();
+
+        videoTexture = new THREE.VideoTexture(video);
+        videoTexture.flipY = false;
+        videoTexture.minFilter = videoTexture.magFilter = THREE.LinearFilter;
+
+        model.traverse((child) => {
+            if (!child.isMesh) return;
+
+            const name = child.name || "";
+
+            //--------------------------------------------------
+            // Attribution des textures
+            //--------------------------------------------------
+            if (name.includes("First")) child.material = firstMaterial;
+            else if (name.includes("Second")) child.material = secondMaterial;
+            else if (name.includes("Third")) child.material = thirdMaterial;
+            else if (name.includes("Fifth")) child.material = fifthMaterial;
+            else if (name.includes("Sixth")) child.material = sixthMaterial;
+            else if (name.includes("Seven")) child.material = sevenMaterial;
+            else if (name.includes("Eight")) child.material = eightMaterial;
+            else if (name.includes("Nine")) child.material = nineMaterial;
+            else if (name.includes("Background")) child.material = backgroundMaterial;
+
+            child.userData.initialScale = child.scale.clone();
+            child.userData.initialPosition = child.position.clone();
+            child.userData.initialRotation = child.rotation.clone();
+
+            if (name === "Zizi") {
+                child.material = new THREE.MeshBasicMaterial({ map: videoTexture });
+            }
+
+            if (name.includes("Chair_Top") || (child.parent && child.parent.name.includes("Chair_Top"))) {
+                chairTop = child.name.includes("Chair_Top") ? child : child.parent;
+                if (chairTop && !chairTop.userData.initialRotation) {
+                    chairTop.userData.initialRotation = chairTop.rotation.clone();
+                }
+            }
+
+            if (name.toLowerCase().includes("fan")) {
+                if (name.toLowerCase().includes("fan_2")) xAxisFans.push(child);
+                else yAxisFans.push(child);
+            }
+
+            if (name.includes("Hanging_Plank_1")) plank1 = child;
+            else if (name.includes("Hanging_Plank_2")) plank2 = child;
+            else if (name.includes("My_Work")) workBtn = child;
+            else if (name.includes("About")) aboutBtn = child;
+            else if (name.includes("Contact")) contactBtn = child;
+
+            if (name.includes("Hanging_Plank_1")) {
+                child.scale.set(0, 0, 1);
+            } else if (name.includes("Hanging_Plank_2") || name.includes("My_Work") ||
+                       name.includes("About") || name.includes("Contact") ||
+                       name.includes("_Projet") || name.includes("_Target") || name.includes("_Raycaster") || name.includes("_Letters")) {
+                child.scale.set(0, 0, 0);
+            }
+        });
+
+        createHitboxes(model);
+    });
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("click", onClick);
+    window.addEventListener("resize", onResize);
+
+    document.getElementById("enter").onclick = () => {
+        if (state !== "ready") return;
+        isMuted = false;
+        backgroundMusic.volume(1);
+        buttonSounds.click.mute(false);
+        updateMuteIcon();
+        handleEnter();
+        backgroundMusic.play();
+    };
+
+    document.getElementById("enter-silent").onclick = () => {
+        if (state !== "ready") return;
+        isMuted = true;
+        backgroundMusic.volume(0);
+        buttonSounds.click.mute(true);
+        updateMuteIcon();
+        handleEnter();
+    };
+
+    updateMuteIcon();
+    setupModals();
+}
+
+function setupModals() {
+    const closeModals = () => {
+        document.querySelectorAll('.modal').forEach(m => m.style.display = "none");
+        isModalOpen = false;
+        controls.enabled = true;
+        clickBlocked = true;
+        buttonSounds.click.play();
+        setTimeout(() => clickBlocked = false, 250);
+    };
+
+    document.querySelectorAll('.closeModal').forEach(btn => {
+        btn.addEventListener('click', closeModals);
+    });
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModals();
+        });
+    });
+
+    window.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeModals();
+    });
+}
+
+function playIntroAnimation() {
+    const tl = gsap.timeline({ defaults: { duration: 0.6, ease: "back.out(2)" } });
+
+    const lettersTl = gsap.timeline({ defaults: { duration: 0.6, ease: "back.out(2)" } });
+    const letters = [];
+
+    model.traverse((child) => {
+        if (!child.isMesh) return;
+        const name = child.name || "";
+
+        if (name.includes("_Target") || name.includes("_Raycaster")) {
+            const delay = Math.random() * 0.5;
+            tl.to(child.scale, { x: child.userData.initialScale.x, y: child.userData.initialScale.y, z: child.userData.initialScale.z }, delay)
+              .fromTo(child.position, { y: child.userData.initialPosition.y - 0.25 }, { y: child.userData.initialPosition.y, duration: 0.5, ease: "back.out(2)" }, "<");
+        }
+
+        if (name.includes("_Letters")) letters.push(child);
+    });
+
+    letters.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    letters.forEach((letter, index) => {
+        lettersTl.to(letter.scale, { x: letter.userData.initialScale.x, y: letter.userData.initialScale.y, z: letter.userData.initialScale.z }, index * 0.1)
+                 .fromTo(letter.position, { y: letter.userData.initialPosition.y - 0.25 }, { y: letter.userData.initialPosition.y, duration: 0.5, ease: "back.out(2)" }, "<");
+    });
+
+    const t1 = gsap.timeline({ defaults: { duration: 0.8, ease: "back.out(1.8)" } });
+    t1.timeScale(0.8);
+
+    if (plank1) t1.to(plank1.scale, { x: 1, y: 1 });
+    if (plank2) t1.to(plank2.scale, { x: 1, y: 1, z: 1 }, "-=0.5");
+    if (workBtn) t1.to(workBtn.scale, { x: 1, y: 1, z: 1 }, "-=0.6");
+    if (aboutBtn) t1.to(aboutBtn.scale, { x: 1, y: 1, z: 1 }, "-=0.6");
+    if (contactBtn) t1.to(contactBtn.scale, { x: 1, y: 1, z: 1 }, "-=0.6");
+
+    t1.eventCallback("onComplete", () => createDelayedHitboxes());
+}
+
+function handleEnter() {
+    state = "running";
+    const loading = document.getElementById("loading-screen");
+    const btn = document.getElementById("enter");
+    const silentBtn = document.getElementById("enter-silent");
+
+    btn.disabled = true;
+    silentBtn.disabled = true;
+    btn.style.cursor = "default";
+    btn.style.boxShadow = "none";
+    btn.style.border = "4px solid #6e5e9c";
+    btn.style.background = "#ead7ef";
+    btn.style.color = "#6e5e9c";
+    btn.textContent = "~ Bonjour ~";
+    loading.style.background = "#ead7ef";
+    silentBtn.style.display = "none";
+
+    playReveal();
+}
+
+function playReveal() {
+    const tl = gsap.timeline({
+        onComplete: () => {
+            document.getElementById("loading-screen").remove();
+            isLoaded = true;
+            playIntroAnimation();
+        }
+    });
+
+    tl.to("#loading-screen", { scale: 0.5, duration: 1.2, ease: "back.in(1.8)" })
+      .to("#loading-screen", { y: "200vh", rotateX: 45, rotateY: -35, transformPerspective: 1000, duration: 1.2, ease: "back.in(1.8)" }, "-=0.1");
+}
+
+// ================= HITBOXES =================
+function createHitboxes(root) {
+    root.traverse((obj) => {
+        if (!obj.isMesh) return;
+
+        let targetObject = null;
+        let current = obj;
+        while (current) {
+            const name = current.name || "";
+            if (name.includes("_Manga") || name.includes("Manga") ||
+                name.includes("_Raycaster") || name.includes("Raycaster") ||
+                name.includes("_Target") || name.includes("_Projet") || name.includes("_Letters")) {
+                targetObject = current;
+                break;
+            }
+            current = current.parent;
+        }
+
+        const name = obj.name || "";
+        if (!targetObject && !name.includes("_Target") && !name.includes("_Projet")) return;
+
+        if (name.includes("_Projet") || name.includes("_Raycaster") || name.includes("_Target") ||
+            name.includes("Hanging_Plank") || name.includes("My_Work") ||
+            name.includes("About") || name.includes("Contact") || name.includes("_Letters")) {
+            objectsNeedingDelayedHitboxes.push(obj);
+            return;
+        }
+
+        createSingleHitbox(obj, targetObject);
+    });
+}
+
+function createSingleHitbox(originalObj, targetObject) {
+    originalObj.updateWorldMatrix(true, false);
+    const box = new THREE.Box3().setFromObject(originalObj);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    const factor = originalObj.name.includes("_Headphones") ? 0.5 : 1;
+
+    const hit = new THREE.Mesh(
+        new THREE.BoxGeometry(size.x * factor, size.y * factor, size.z * factor),
+        new THREE.MeshBasicMaterial({ wireframe: true, color: 0xff00ff, transparent: true, opacity: 0.25 })
+    );
+
+    hit.position.copy(center);
+    hit.userData.target = targetObject || originalObj;
+
+    scene.add(hit);
+    hitboxes.push(hit);
+}
+
+function createDelayedHitboxes() {
+    objectsNeedingDelayedHitboxes.forEach(obj => {
+        const savedScale = obj.scale.clone();
+        obj.scale.copy(obj.userData.initialScale || new THREE.Vector3(1,1,1));
+        createSingleHitbox(obj);
+        obj.scale.copy(savedScale);
+    });
+    objectsNeedingDelayedHitboxes = [];
+}
+
+function getType(obj) {
+    if (!obj) return null;
+    let current = obj;
+    while (current) {
+        const n = current.name || "";
+        if (n.includes("_Projet")) return "projet";
+        if (n.includes("_Raycaster")) return "raycaster";
+        if (n.includes("_Target")) return "target";
+        if (n.includes("_Manga") || n.includes("Manga")) return "manga";
+        current = current.parent;
+    }
+    return null;
+}
+
+// ================= HOVER =================
+function applyHover(obj, isHovering) {
+    if (!obj || !obj.userData) return;
+
+    if (!obj.userData.initialScale) obj.userData.initialScale = obj.scale.clone();
+    if (!obj.userData.initialPosition) obj.userData.initialPosition = obj.position.clone();
+    if (!obj.userData.initialRotation) obj.userData.initialRotation = obj.rotation.clone();
+
+    const base = obj.userData.initialScale;
+    const basePos = obj.userData.initialPosition;
+
+    gsap.killTweensOf(obj.scale);
+    gsap.killTweensOf(obj.position);
+    gsap.killTweensOf(obj.rotation);
+
+    const type = getType(obj);
+
+    if (type === "manga") {
+        gsap.to(obj.scale, { x: isHovering ? base.x * 1.2 : base.x, y: isHovering ? base.y * 1.2 : base.y, z: isHovering ? base.z * 1.2 : base.z, duration: 0.25, ease: "power2.out" });
+        gsap.to(obj.position, { y: isHovering ? basePos.y + 0.4 : basePos.y, duration: 0.25, ease: "power2.out" });
+    }
+    else if (type === "raycaster") {
+        const targetScale = isHovering ? 1.7 : 1;
+        gsap.to(obj.scale, { x: base.x * targetScale, y: base.y * targetScale, z: base.z * targetScale, duration: 0.2 });
+    }
+    else if (obj.name.includes("About_Button")) {
+        const targetScale = isHovering ? 1.4 : 1;
+        gsap.to(obj.scale, { x: base.x * targetScale, y: base.y * targetScale, z: base.z * targetScale, duration: 0.2 });
+        const targetRotationX = isHovering ? obj.userData.initialRotation.x - Math.PI / 10 : obj.userData.initialRotation.x;
+        gsap.to(obj.rotation, { x: targetRotationX, duration: 0.5, ease: isHovering ? "back.out(2)" : "power2.out" });
+    }
+    else if (type === "projet") {
+        const targetScale = isHovering ? 1.4 : 1;
+        gsap.to(obj.scale, { x: base.x * targetScale, y: base.y * targetScale, z: base.z * targetScale, duration: 0.2 });
+        gsap.to(obj.rotation, { x: obj.userData.initialRotation.x + (isHovering ? Math.PI / 10 : 0), duration: 0.5, ease: "back.out(2)" });
+    }
+    else if (type === "target") {
+        gsap.to(obj.rotation, { y: obj.userData.initialRotation.y - (isHovering ? Math.PI / 10 : 0), duration: 0.5, ease: "back.out(2)" });
+    }
+    else if (obj.name.includes("_Letters")) {
+        gsap.to(obj.position, { y: isHovering ? basePos.y + 0.4 : basePos.y, duration: 0.25, ease: "power2.out" });
+    }
+}
+
+function resetHover() {
+    if (!currentHover) return;
+    applyHover(currentHover, false);
+    currentHover = null;
+}
+
+function handleHover() {
+    if (!isLoaded || isModalOpen) return;
+
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(hitboxes);
+
+    if (!hits.length) {
+        resetHover();
+        document.body.style.cursor = "default";
+        return;
+    }
+
+    const target = hits[0].object.userData.target;
+    const name = target ? target.name : "";
+
+    const shouldShowPointer = name.includes("_Target") || name.includes("_Projet");
+
+    if (target === currentHover) {
+        document.body.style.cursor = shouldShowPointer ? "pointer" : "default";
+        return;
+    }
+
+    resetHover();
+    currentHover = target;
+    applyHover(target, true);
+    document.body.style.cursor = shouldShowPointer ? "pointer" : "default";
+}
+
+// ================= INTERACTIONS =================
+function onClick() {
+    if (isModalOpen || clickBlocked) return;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(hitboxes);
+    if (!hits.length) return;
+
+    const obj = hits[0].object.userData.target;
+    const type = getType(obj);
+
+    if (type === "manga") {
+        const box = new THREE.Box3().setFromObject(obj);
+        const center = box.getCenter(new THREE.Vector3());
+        const offset = new THREE.Vector3(0, 3, 1);
+        const newCamPos = center.clone().add(offset);
+
+        controls.enabled = false;
+        gsap.to(camera.position, { x: newCamPos.x, y: newCamPos.y, z: newCamPos.z, duration: 1.2, ease: "power2.inOut" });
+        gsap.to(controls.target, {
+            x: center.x, y: center.y, z: center.z, duration: 1.2, ease: "power2.inOut",
+            onUpdate: () => controls.update(),
+            onComplete: () => controls.enabled = true
+        });
+        return;
+    }
+
+    if (obj.name.includes("About")) {
+        document.getElementById("modal-about").style.display = "flex";
+        isModalOpen = true;
+        controls.enabled = false;
+        buttonSounds.click.play();
+        return;
+    }
+
+    if (obj.name.includes("My_Work")) {
+        document.getElementById("modal-work").style.display = "flex";
+        isModalOpen = true;
+        controls.enabled = false;
+        buttonSounds.click.play();
+        return;
+    }
+
+    if (obj.name.includes("Contact")) {
+        document.getElementById("modal-contact").style.display = "flex";
+        isModalOpen = true;
+        controls.enabled = false;
+        buttonSounds.click.play();
+        return;
+    }
+}
+
+function onMove(e) {
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+
+    xAxisFans.forEach(fan => fan.rotation.x -= 0.04);
+    yAxisFans.forEach(fan => fan.rotation.y -= 0.04);
+
+    if (chairTop && chairTop.userData.initialRotation) {
+        const time = performance.now() * 0.001;
+        const baseAmplitude = Math.PI / 8;
+        const rotationOffset = baseAmplitude * Math.sin(time * 0.5) * (1 - Math.abs(Math.sin(time * 0.5)) * 0.3);
+        chairTop.rotation.y = chairTop.userData.initialRotation.y + rotationOffset;
+    }
+
+    if (isLoaded) handleHover();
+    renderer.render(scene, camera);
+}
+
+// ================= AUDIO =================
+const buttonSounds = { click: new Howl({ src: ["/audio/sfx/click/bubble.ogg"], preload: true, volume: 0.5 }) };
+const backgroundMusic = new Howl({ src: ["/audio/music/cosmic_candy.ogg"], loop: true, volume: 1 });
+
+let isMuted = false;
+const muteToggleButton = document.querySelector(".mute-toggle-button");
+
+function handleMuteToggle(e) {
+    e.preventDefault();
+    isMuted = !isMuted;
+    backgroundMusic.volume(isMuted ? 0 : 1);
+    buttonSounds.click.mute(isMuted);
+    buttonSounds.click.play();
+
+    if (!backgroundMusic.playing()) backgroundMusic.play();
+
+    gsap.to(muteToggleButton, {
+        rotate: 0, scale: 1, duration: 0.5, ease: "back.out(2)",
+        onStart: () => {
+            document.querySelector(".sound-off-svg").style.display = isMuted ? "block" : "none";
+            document.querySelector(".sound-on-svg").style.display = isMuted ? "none" : "block";
+        },
+        onComplete: () => gsap.set(muteToggleButton, { clearProps: "all" })
+    });
+}
+
+muteToggleButton.addEventListener("click", handleMuteToggle);
+muteToggleButton.addEventListener("touchend", handleMuteToggle);
+
+init();
+animate();
+
+const nextButton = document.querySelector('.swiper-button-next');
+
+nextButton.addEventListener('click', () => {
+  console.log('Next button clicked');
+});
+
+console.group("[DEBUG CAMERA]");
+console.log("window:", window.innerWidth, "x", window.innerHeight, "aspect:", camera.aspect.toFixed(3));
+console.log("fov:", camera.fov, "near:", camera.near, "far:", camera.far);
+console.log("model size:", size.toArray().map(v => +v.toFixed(2)));
+console.log("model center:", center.toArray().map(v => +v.toFixed(2)));
+console.log("distance calculée:", distance.toFixed(2));
+console.log("camera.position:", camera.position.toArray().map(v => +v.toFixed(2)));
+console.log("controls.target:", controls.target.toArray().map(v => +v.toFixed(2)));
+console.log("distance réelle caméra->cible:", camera.position.distanceTo(controls.target).toFixed(2));
+console.log("min/max distance:", controls.minDistance.toFixed(2), controls.maxDistance.toFixed(2));
+console.groupEnd();
+
+</script>
+
+
+</body></html>

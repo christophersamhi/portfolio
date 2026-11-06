@@ -1,0 +1,1259 @@
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&amp;family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<style>
+/* ========== Variables ========== */
+:root {
+    --blue-dark: #36579F;
+    --blue-mid: #4F74C9;
+    --blue-light: #7FA0E7;
+    --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========== Base ========== */
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #222;
+    font-family: 'Nunito', sans-serif;
+}
+canvas { display: block; }
+h2 {
+    font-size: 32px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    margin-top: 20px;
+}
+h2, h3, #enter, #enter-silent {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+}
+
+/* ========== Écran de chargement ========== */
+#loading-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 108vw;
+    height: 108vh;
+    margin: -54vh 0 0 -54vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--blue-dark);
+    color: white;
+    z-index: 3000;
+    border: 8px solid var(--blue-mid);
+    border-radius: 48px;
+    transform: perspective(1000px);
+    overflow: hidden;
+}
+
+#enter, #enter-silent {
+    opacity: 0;
+    margin: 10px 0;
+    padding: 14px 40px;
+    border: 4px solid var(--blue-light);
+    border-radius: 12px;
+    background: var(--blue-mid);
+    color: #F4F8FF;
+    font-size: 18px;
+    cursor: default;
+    transition: transform .4s var(--ease-pop), background .3s, color .3s, border-color .3s;
+}
+#enter:hover, #enter-silent:hover {
+    transform: scale(1.12);
+    background: #6B92E4;
+    border-color: #AFC8FF;
+    cursor: pointer;
+}
+
+/* ========== Modales ========== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    will-change: opacity;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    max-width: 60%;
+    max-height: 70vh;
+    padding: 30px;
+    border: 8px solid var(--blue-dark);
+    border-radius: 12px;
+    background: var(--blue-light);
+    color: white;
+    z-index: 10001;
+    cursor: auto;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+#modal-about .modal-content { max-width: clamp(10px, 40%, 700px); }
+#modal-contact .modal-content { min-height: 240px; }
+
+.modal-content p { font-size: 22px; margin-bottom: 15px; margin-top: 0; }
+.modal-content ul {
+    margin: 0;
+    margin-top: 25px;
+    padding: 0;
+    list-style: none;
+    font-size: 22px;
+}
+.modal-content ul li { margin-bottom: 8px; }
+
+.modal-content-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;                      /* Firefox */
+    scrollbar-color: var(--blue-dark) transparent;
+    scrollbar-gutter: stable;
+}
+.modal-content-wrapper::-webkit-scrollbar { width: 8px; }
+.modal-content-wrapper::-webkit-scrollbar-track { background: transparent; }
+.modal-content-wrapper::-webkit-scrollbar-thumb { background: var(--blue-dark); border-radius: 20px; }
+.modal-content-wrapper::-webkit-scrollbar-button { display: none; }
+
+/* Bouton fermer */
+.closeModal {
+    position: absolute;
+    top: -30px;
+    left: -32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+    border: 8px solid var(--blue-dark);
+    border-radius: 1.2rem;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    cursor: pointer;
+    transition: transform .4s var(--ease-pop);
+    z-index: 10003;
+}
+.closeModal:hover { transform: rotate(-5deg) scale(1.15); }
+.closeModal svg { width: 28px; height: 28px; stroke: var(--blue-dark); }
+
+/* Contact */
+.modal-socials {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.modal-socials a { width: 50px; cursor: pointer; }
+.modal-socials a.mail { width: 62px; }
+.modal-socials svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform .4s var(--ease-pop);
+}
+.modal-socials a:hover svg { transform: rotate(-5deg) scale(1.15); }
+.modal-socials svg path { fill: var(--blue-dark); }
+
+/* ========== Boutons son + langue ========== */
+.mute-toggle-button,
+.lang-toggle-button {
+    position: fixed;
+    top: 40px;
+    padding: 10px;
+    border: 8px solid var(--blue-dark);
+    border-radius: 1.2rem;
+    background: var(--blue-light);
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform .4s var(--ease-pop);
+}
+.mute-toggle-button { right: 40px; }
+.lang-toggle-button {
+    right: 136px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 76px;
+    height: 76px;
+    box-sizing: border-box;
+    padding: 0;
+    color: var(--blue-dark);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1;
+}
+.mute-toggle-button:hover,
+.lang-toggle-button:hover { transform: rotate(-5deg) scale(1.3); }
+.sound-svg { width: 40px; height: 40px; stroke: var(--blue-dark); }
+.sound-off-svg { display: none; }
+
+/* ========== Swiper ========== */
+.swiper {
+    margin-top: 20px;
+}
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 0;
+    box-sizing: border-box;
+}
+.swiper-slide img {
+    width: calc(50% - 8px);
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.swiper-slide:has(img:only-child) img { width: 100%; }
+
+.swiper-button-next, .swiper-button-prev {
+    top: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    border-radius: 50%;
+    background: var(--blue-dark);
+    color: white;
+    z-index: 10002;
+    pointer-events: auto !important;
+    transition: transform .25s ease;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover { transform: scale(1.15); }
+.swiper-button-next:after, .swiper-button-prev:after { font-size: 24px; }
+.swiper-pagination { z-index: 10002; }
+.swiper-pagination-bullet-active { background: var(--blue-dark); }
+
+/* ========== Debug caméra (touche L) ========== */
+#camera-debug {
+    display: none;
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    min-width: 260px;
+    padding: 10px 14px;
+    border: 2px solid #6e5e9c;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #0f0;
+    font: 13px monospace;
+    pointer-events: none;
+    z-index: 10000;
+}
+</style>
+</head>
+<body>
+
+<!-- ========== Chargement ========== -->
+<div id="loading-screen">
+    <h2 id="title-loading" data-i18n="loading">Chargement...</h2>
+    <button id="enter" data-i18n="enter" disabled="">Entrer</button>
+    <button id="enter-silent" data-i18n="enterSilent" disabled="">Entrer (sans son)</button>
+</div>
+
+<!-- ========== Bouton langue ========== -->
+<button class="lang-toggle-button" id="lang-toggle" aria-label="Change language">EN</button>
+
+<!-- ========== Bouton son ========== -->
+<button class="mute-toggle-button">
+    <svg class="sound-svg sound-off-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M366.064 567.04C430.064 624 508.464 663.04 545.584 650.56C612.784 625.6 623.984 490.557 623.984 397.117C623.984 371.197 623.984 341.76 620.464 312.641" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M596.134 200.963C592.038 188.521 585.44 177.047 576.746 167.252C568.051 157.456 557.443 149.545 545.578 144.002C506.218 129.282 422.698 175.999 353.578 237.119H302.375C268.427 237.119 235.87 250.606 211.865 274.611C187.86 298.616 174.375 331.171 174.375 365.12V429.12C174.365 453.795 181.488 477.952 194.887 498.672C208.285 519.395 227.387 535.802 249.894 545.92" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M720 77.4414L80 717.44" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="sound-svg sound-on-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M417.578 144.002C378.218 129.282 294.696 175.999 225.576 237.119H174.375C140.427 237.119 107.87 250.606 83.8653 274.611C59.8605 298.616 46.375 331.171 46.375 365.12V429.12C46.375 463.066 59.8605 495.626 83.8653 519.632C107.87 543.635 140.427 557.12 174.375 557.12H225.576C293.096 619.2 376.618 664.96 417.578 650.56C484.778 625.6 495.974 490.56 495.974 397.12C495.974 303.679 484.778 168.962 417.578 144.002Z" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M677.127 215.039C725.098 263.044 752.049 328.134 752.049 396C752.049 463.866 725.098 528.957 677.127 576.96" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M609.252 510.4C639.246 480.394 656.097 439.703 656.097 397.277C656.097 354.851 639.246 314.165 609.252 284.16" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+</button>
+
+<!-- ========== Modale Projets ========== -->
+<div id="modal-projet" class="modal">
+    <div class="modal-content">
+        <button class="closeModal" aria-label="Fermer">
+            <svg viewBox="0 0 24 24"><path d="M18 6 L6 18 M6 6 L18 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        </button>
+        <h2 id="title-projet"></h2>
+        <div class="modal-content-wrapper"></div>
+    </div>
+</div>
+
+<!-- ========== Modale About ========== -->
+<div id="modal-about" class="modal">
+    <div class="modal-content">
+        <button class="closeModal" aria-label="Fermer">
+            <svg viewBox="0 0 24 24"><path d="M18 6 L6 18 M6 6 L18 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        </button>
+        <h2 id="title-about" data-i18n="aboutTitle">À propos de moi</h2>
+        <div class="modal-content-wrapper">
+            <h3 data-i18n="aboutSub">Développeur, créatif &amp; gamer dans l'âme 🎮</h3>
+            <p data-i18n="aboutP1">Salut ! Moi, c'est Christopher, développeur Front-End autodidacte, passionné par le web, le design et tout ce qui touche à la création.</p>
+            <p data-i18n="aboutP2">J'ai toujours été attiré par les belles choses, le souci du détail et les univers visuellement marquants. C'est ce qui m'a naturellement amené vers le développement web, un domaine qui me permet de mélanger technique et créativité.</p>
+            <p data-i18n="aboutP3">Grand amateur de jeux vidéo, de mangas et de culture pop, je puise beaucoup d'inspiration dans ces univers. J'aime les ambiances travaillées, les directions artistiques originales et les expériences qui sortent de l'ordinaire.</p>
+            <p data-i18n="aboutP4">Je suis quelqu'un de curieux, qui aime expérimenter, apprendre et surtout donner vie à ses idées. Que ce soit à travers quelques lignes de code, des animations ou un design, j'aime quand les choses ont du caractère et une vraie identité.</p>
+            <ul>
+                <li data-i18n="li1">💻 Développeur Front-End autodidacte</li>
+                <li data-i18n="li2">🎮 Passionné de jeux vidéo, notamment CS2 et League of Legends</li>
+                <li data-i18n="li3">📚 Grand amateur de mangas et de culture japonaise</li>
+                <li data-i18n="li4">🎬 Fan de culture pop, cinéma et univers geek</li>
+                <li data-i18n="li5">🎨 Sensible au design, à l'esthétique et aux belles choses</li>
+                <li data-i18n="li6">✨ J'aime les animations, les interfaces soignées et les expériences interactives</li>
+                <li data-i18n="li7">🧠 Curieux de nature, toujours envie d'apprendre</li>
+                <li data-i18n="li8">🛠️ J'aime expérimenter et donner vie à de nouvelles idées</li>
+                <li data-i18n="li9">🎧 Amateur de musique et de découvertes</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Modale My Work ========== -->
+<div id="modal-work" class="modal">
+    <div class="modal-content">
+        <button class="closeModal" aria-label="Fermer">
+            <svg viewBox="0 0 24 24"><path d="M18 6 L6 18 M6 6 L18 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        </button>
+        <h2 id="title-work" data-i18n="workTitle">Mes projets</h2>
+        <div class="modal-content-wrapper">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="./img/projet-1.png" alt="Projet 1"></div>
+                    <div class="swiper-slide"><img src="./img/projet-2.png" alt="Projet 2"></div>
+                    <div class="swiper-slide"><img src="./img/projet-3.png" alt="Projet 3"></div>
+                    <div class="swiper-slide"><img src="./img/projet-4.png" alt="Projet 4"></div>
+                    <div class="swiper-slide"><img src="./img/projet-5.png" alt="Projet 5"></div>
+                    <div class="swiper-slide"><img src="./img/projet-6.png" alt="Projet 6"></div>
+                    <div class="swiper-slide"><img src="./img/projet-7.png" alt="Projet 7"></div>
+                    <div class="swiper-slide"><img src="./img/projet-8.png" alt="Projet 8"></div>
+                    <div class="swiper-slide"><img src="./img/projet-9.png" alt="Projet 9"></div>
+                    <div class="swiper-slide"><img src="./img/projet-10.png" alt="Projet 10"></div>
+                    <div class="swiper-slide"><img src="./img/projet-11.png" alt="Projet 11"></div>
+                    <div class="swiper-slide"><img src="./img/projet-12.png" alt="Projet 12"></div>
+                    <div class="swiper-slide"><img src="./img/projet-13.png" alt="Projet 13"></div>
+                    <div class="swiper-slide"><img src="./img/projet-14.png" alt="Projet 14"></div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Modale Contact ========== -->
+<div id="modal-contact" class="modal">
+    <div class="modal-content">
+        <button class="closeModal" aria-label="Fermer">
+            <svg viewBox="0 0 24 24"><path d="M18 6 L6 18 M6 6 L18 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        </button>
+        <h2 id="title-contact" data-i18n="contactTitle">Hey !</h2>
+        <div class="modal-content-wrapper">
+            <h3 data-i18n="contactSub">Une idée en tête ? Parlons-en !</h3>
+            <div class="modal-socials">
+                <a class="mail" href="mailto:ch.samhi@outlook.fr?subject=Contact" aria-label="Mail">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.54433 5.16792C3.0468 4.46923 3.86451 4 4.8 4H19.2C20.1355 4 20.9532 4.46923 21.4557 5.16792C21.7993 5.64567 22 6.235 22 6.86667V17.1333C22 18.682 20.7804 20 19.2 20H4.8C3.21964 20 2 18.682 2 17.1333V6.86667C2 6.23499 2.20074 5.64567 2.54433 5.16792ZM4.9327 6L11.2598 12.9647C11.6566 13.4015 12.3434 13.4015 12.7402 12.9647L19.0673 6H4.9327ZM20 7.94766L14.2205 14.3096C13.0301 15.6199 10.9699 15.6199 9.77948 14.3096L4 7.94766V17.1333C4 17.6466 4.39214 18 4.8 18H19.2C19.6079 18 20 17.6466 20 17.1333V7.94766Z"></path>
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com/in/TON-PROFIL/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20,2H4C2.9,2,2,2.9,2,4v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M8.1,18H5V9.4h3.1V18z M6.5,8.4C5.6,8.4,5,7.8,5,7s0.6-1.4,1.6-1.4c0.9,0,1.5,0.6,1.5,1.4S7.5,8.4,6.5,8.4z M19,18h-3.1v-4.7c0-1.3-0.8-1.6-1.1-1.6s-1.3,0.2-1.3,1.6c0,0.2,0,4.7,0,4.7h-3.1V9.4h3.1v1.2c0.4-0.7,1.2-1.2,2.7-1.2s2.7,1.2,2.7,3.9L19,18z"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Debug caméra ========== -->
+<div id="camera-debug">
+    <strong>Camera Debug</strong><br>
+    Pos: <span id="cam-pos">0, 0, 0</span><br>
+    Target: <span id="cam-target">0, 0, 0</span><br>
+    Dist: <span id="cam-dist">0</span>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.179.1/build/three.module.js"}}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script type="module">
+import { Howl } from "https://cdn.jsdelivr.net/npm/howler@2.2.4/+esm";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.179.1/+esm';
+import { OrbitControls } from './util/OrbitControls.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/loaders/GLTFLoader.js';
+import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm';
+
+// =====================================================
+// CONFIG
+// =====================================================
+const LINKS = {
+    linkedin: "https://www.linkedin.com/in/TON-PROFIL/",
+    mail: "mailto:ch.samhi@outlook.fr?subject=Contact"
+};
+
+const MUSIC_VOLUME = 0.4;
+const CLICK_VOLUME = 0.2;
+
+// Ordre important : le premier nom trouvé dans le mesh gagne
+const TEXTURES = [
+    ["First", "first.webp"],
+    ["Second", "second.webp"],
+    ["Third", "third.webp"],
+    ["Fifth", "fifth.webp"],
+    ["Sixth", "sixth.webp"],
+    ["Seven", "seven.webp"],
+    ["Eight", "eight.webp"],
+    ["Nine", "nine.webp"],
+    ["Ten", "ten.webp"],
+    ["eleven", "eleven.webp"],
+    ["twelve", "twelve.webp"],
+    ["Thirteen", "thirteen.webp"],
+    ["Fourteen", "fourteen.webp"],
+    ["lalala", "lalala.webp"],
+    ["Prout", "seventeen.webp"],
+    ["Background", "background.png"],
+    ["Zizi", "zizi.png"],
+    ["bakenew1", "bakenew1.png"],
+    ["bakenew2", "bakenew2.png"],
+    ["bakenew3", "bakenew3.png"]
+];
+
+// Objets qui reçoivent une hitbox
+const HITBOX_KEYS = ["Manga", "Raycaster", "_Target", "_Projet", "_Letters", "_Linkedin", "_Mail"];
+// Objets cachés au départ (hitbox créée après l'animation d'intro)
+const DELAYED_KEYS = ["_Projet", "_Raycaster", "_Target", "Hanging_Plank", "My_Work", "About", "Contact", "_Letters"];
+// Objets masqués (scale 0) avant l'intro
+const HIDDEN_KEYS = ["Hanging_Plank_2", "My_Work", "About", "Contact", "_Projet", "_Target", "_Raycaster", "_Letters"];
+// Objets qui affichent le curseur "pointer"
+const POINTER_KEYS = ["_Target", "_Projet", "_Linkedin", "_Mail"];
+
+// =====================================================
+// TRADUCTIONS (FR / EN)
+// =====================================================
+const I18N = {
+    fr: {
+        loading: "Chargement...",
+        enter: "Entrer",
+        enterSilent: "Entrer (sans son)",
+        hello: "~ Hello ~",
+        aboutTitle: "À propos de moi",
+        aboutSub: "Développeur, créatif & gamer dans l'âme 🎮",
+        aboutP1: "Salut ! Moi, c'est Christopher, développeur Front-End autodidacte, passionné par le web, le design et tout ce qui touche à la création.",
+        aboutP2: "J'ai toujours été attiré par les belles choses, le souci du détail et les univers visuellement marquants. C'est ce qui m'a naturellement amené vers le développement web, un domaine qui me permet de mélanger technique et créativité.",
+        aboutP3: "Grand amateur de jeux vidéo, de mangas et de culture pop, je puise beaucoup d'inspiration dans ces univers. J'aime les ambiances travaillées, les directions artistiques originales et les expériences qui sortent de l'ordinaire.",
+        aboutP4: "Je suis quelqu'un de curieux, qui aime expérimenter, apprendre et surtout donner vie à ses idées. Que ce soit à travers quelques lignes de code, des animations ou un design, j'aime quand les choses ont du caractère et une vraie identité.",
+        li1: "💻 Développeur Front-End autodidacte",
+        li2: "🎮 Passionné de jeux vidéo, notamment CS2 et League of Legends",
+        li3: "📚 Grand amateur de mangas et de culture japonaise",
+        li4: "🎬 Fan de culture pop, cinéma et univers geek",
+        li5: "🎨 Sensible au design, à l'esthétique et aux belles choses",
+        li6: "✨ J'aime les animations, les interfaces soignées et les expériences interactives",
+        li7: "🧠 Curieux de nature, toujours envie d'apprendre",
+        li8: "🛠️ J'aime expérimenter et donner vie à de nouvelles idées",
+        li9: "🎧 Amateur de musique et de découvertes",
+        workTitle: "Mes projets",
+        contactTitle: "Hey !",
+        contactSub: "Une idée en tête ? Parlons-en !",
+        project: "Projet",
+        close: "Fermer",
+        langBtn: "EN",
+        langAria: "Passer le site en anglais"
+    },
+    en: {
+        loading: "Loading...",
+        enter: "Enter",
+        enterSilent: "Enter (no sound)",
+        hello: "~ Hello ~",
+        aboutTitle: "About me",
+        aboutSub: "Developer, creative & gamer at heart 🎮",
+        aboutP1: "Hi! I'm Christopher, a self-taught Front-End developer passionate about the web, design and everything creative.",
+        aboutP2: "I've always been drawn to beautiful things, attention to detail and visually striking worlds. That's what naturally led me to web development, a field that lets me blend technical skills with creativity.",
+        aboutP3: "A big fan of video games, manga and pop culture, I draw a lot of inspiration from these worlds. I love carefully crafted atmospheres, original art direction and experiences that stand out from the ordinary.",
+        aboutP4: "I'm a curious person who loves to experiment, learn and, above all, bring ideas to life. Whether through a few lines of code, animations or a design, I love it when things have character and a real identity.",
+        li1: "💻 Self-taught Front-End developer",
+        li2: "🎮 Passionate about video games, especially CS2 and League of Legends",
+        li3: "📚 Big fan of manga and Japanese culture",
+        li4: "🎬 Pop culture, cinema and geek universe enthusiast",
+        li5: "🎨 Sensitive to design, aesthetics and beautiful things",
+        li6: "✨ I love animations, polished interfaces and interactive experiences",
+        li7: "🧠 Naturally curious, always eager to learn",
+        li8: "🛠️ I like to experiment and bring new ideas to life",
+        li9: "🎧 Music lover and always looking for new discoveries",
+        workTitle: "My projects",
+        contactTitle: "Hey!",
+        contactSub: "Got an idea in mind? Let's talk!",
+        project: "Project",
+        close: "Close",
+        langBtn: "FR",
+        langAria: "Switch the site to French"
+    }
+};
+
+// =====================================================
+// ÉTAT
+// =====================================================
+let scene, camera, renderer, controls, raycaster, pointer;
+let model, video, videoTexture, chairTop = null;
+let hourHand, minuteHand;
+let plank1, plank2, workBtn, aboutBtn, contactBtn;
+let currentHover = null;
+let state = "loading";
+let isLoaded = false, isModalOpen = false, isModalAnimating = false, clickBlocked = false;
+let isMuted = false;
+let cameraLogInterval = null;
+let currentLang = "fr";
+
+const hitboxes = [];
+const xAxisFans = [];
+const yAxisFans = [];
+let delayedHitboxObjects = [];
+
+// =====================================================
+// UTILITAIRES
+// =====================================================
+const hasAny = (name, keys) => keys.some(k => name.includes(k));
+const $ = (id) => document.getElementById(id);
+
+function restoreScale(obj) {
+    const s = obj.userData.initialScale;
+    return { x: s.x, y: s.y, z: s.z };
+}
+
+function scaleGSAP(obj, factor, duration = 0.2) {
+    const b = obj.userData.initialScale;
+    gsap.to(obj.scale, { x: b.x * factor, y: b.y * factor, z: b.z * factor, duration });
+}
+
+function getBoxWithoutBackground(root) {
+    const box = new THREE.Box3();
+    root.updateWorldMatrix(true, true);
+    root.traverse((child) => {
+        if (child.isMesh && !child.name.includes("Background") && !child.name.includes("Plane016")) {
+            box.expandByObject(child);
+        }
+    });
+    return box;
+}
+
+// =====================================================
+// LANGUE
+// =====================================================
+function detectLang() {
+    try {
+        const saved = localStorage.getItem("lang");
+        if (saved === "fr" || saved === "en") return saved;
+    } catch (e) { /* stockage indisponible */ }
+    return (navigator.language || "fr").toLowerCase().startsWith("fr") ? "fr" : "en";
+}
+
+function applyLang(lang) {
+    currentLang = lang;
+    const t = I18N[lang];
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const value = t[el.dataset.i18n];
+        if (value !== undefined) el.textContent = value;
+    });
+
+    document.querySelectorAll(".swiper-slide img").forEach((img, i) => {
+        img.alt = `${t.project} ${i + 1}`;
+    });
+    document.querySelectorAll(".closeModal").forEach(btn => btn.setAttribute("aria-label", t.close));
+
+    const langBtn = $("lang-toggle");
+    langBtn.textContent = t.langBtn;
+    langBtn.setAttribute("aria-label", t.langAria);
+
+    try { localStorage.setItem("lang", lang); } catch (e) { /* ignore */ }
+}
+
+function toggleLang(e) {
+    e.preventDefault();
+    clickSound.play();
+    applyLang(currentLang === "fr" ? "en" : "fr");
+}
+
+// =====================================================
+// TEXTURES & MATÉRIAUX
+// =====================================================
+const textureLoader = new THREE.TextureLoader();
+
+const materials = TEXTURES.map(([key, file]) => {
+    const map = textureLoader.load(`textures/${file}`);
+    map.flipY = false;
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.minFilter = THREE.LinearMipMapLinearFilter;
+    map.magFilter = THREE.LinearFilter;
+    map.anisotropy = 16;
+    return [key, new THREE.MeshStandardMaterial({ map, roughness: 0.65, metalness: 0.05 })];
+});
+
+function getMaterialFor(name) {
+    const entry = materials.find(([key]) => name.includes(key));
+    return entry ? entry[1] : null;
+}
+
+// =====================================================
+// SWIPER
+// =====================================================
+new Swiper(".mySwiper", {
+    loop: true,
+    speed: 600,
+    spaceBetween: 20,
+    grabCursor: true,
+    keyboard: { enabled: true },
+    pagination: { el: ".swiper-pagination", clickable: true },
+    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+});
+
+// =====================================================
+// AUDIO
+// =====================================================
+const clickSound = new Howl({ src: ["audio/bubble.ogg"], preload: true, volume: CLICK_VOLUME });
+const backgroundMusic = new Howl({ src: ["audio/musique.mp3"], loop: true, volume: MUSIC_VOLUME });
+const muteToggleButton = document.querySelector(".mute-toggle-button");
+
+function updateMuteIcon() {
+    document.querySelector(".sound-on-svg").style.display = isMuted ? "none" : "block";
+    document.querySelector(".sound-off-svg").style.display = isMuted ? "block" : "none";
+}
+
+function handleMuteToggle(e) {
+    e.preventDefault();
+    isMuted = !isMuted;
+    backgroundMusic.volume(isMuted ? 0 : MUSIC_VOLUME);
+    clickSound.mute(isMuted);
+    clickSound.play();
+    if (!backgroundMusic.playing()) backgroundMusic.play();
+
+    gsap.to(muteToggleButton, {
+        rotate: 0, scale: 1, duration: 0.5, ease: "back.out(2)",
+        onStart: updateMuteIcon,
+        onComplete: () => gsap.set(muteToggleButton, { clearProps: "all" })
+    });
+}
+
+muteToggleButton.addEventListener("click", handleMuteToggle);
+muteToggleButton.addEventListener("touchend", handleMuteToggle);
+
+// =====================================================
+// INITIALISATION
+// =====================================================
+function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 200);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.minPolarAngle = 0;
+    controls.maxPolarAngle = Math.PI / 2;
+    controls.minAzimuthAngle = 0;
+    controls.maxAzimuthAngle = Math.PI / 2;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.panSpeed = 0.6;
+    controls.zoomToCursor = true;
+    controls.zoomSpeed = 1.5;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.7));
+    const light = new THREE.DirectionalLight(0xffffff, 1.7);
+    light.position.set(5, 10, 50);
+    scene.add(light);
+
+    raycaster = new THREE.Raycaster();
+    pointer = new THREE.Vector2();
+
+    const manager = new THREE.LoadingManager();
+    manager.onLoad = onAssetsLoaded;
+    new GLTFLoader(manager).load("scene.glb", onModelLoaded);
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("click", onClick);
+    window.addEventListener("resize", onResize);
+
+    $("enter").onclick = () => enter(false);
+    $("enter-silent").onclick = () => enter(true);
+
+    // Bouton langue
+    const langBtn = $("lang-toggle");
+    langBtn.addEventListener("click", toggleLang);
+    langBtn.addEventListener("touchend", toggleLang);
+    applyLang(detectLang());
+
+    updateMuteIcon();
+    setupModals();
+}
+
+function onAssetsLoaded() {
+    state = "ready";
+    const btn = $("enter");
+    const silentBtn = $("enter-silent");
+    btn.disabled = false;
+    silentBtn.disabled = false;
+
+    const pop = { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" };
+    gsap.fromTo(btn, { opacity: 0, scale: 0.8 }, pop);
+    gsap.fromTo(silentBtn, { opacity: 0, scale: 0.8 }, { ...pop, delay: 0.2 });
+}
+
+function enter(silent) {
+    if (state !== "ready") return;
+    isMuted = silent;
+    backgroundMusic.volume(silent ? 0 : MUSIC_VOLUME);
+    clickSound.mute(silent);
+    updateMuteIcon();
+    handleEnter();
+    if (!silent) backgroundMusic.play();
+}
+
+// =====================================================
+// MODÈLE 3D
+// =====================================================
+function onModelLoaded(gltf) {
+    model = gltf.scene;
+    scene.add(model);
+
+    // Centre le modèle (sans le fond)
+    model.position.sub(getBoxWithoutBackground(model).getCenter(new THREE.Vector3()));
+
+    setupVideo();
+    frameCamera();
+    prepareMeshes();
+    createHitboxes(model);
+}
+
+function setupVideo() {
+    video = document.createElement("video");
+    Object.assign(video, {
+        src: "videos/video.mp4",
+        crossOrigin: "anonymous",
+        loop: true,
+        muted: true,
+        autoplay: true,
+        playsInline: true
+    });
+    video.play();
+
+    videoTexture = new THREE.VideoTexture(video);
+    videoTexture.flipY = false;
+    videoTexture.minFilter = videoTexture.magFilter = THREE.LinearFilter;
+}
+
+function frameCamera() {
+    const box = getBoxWithoutBackground(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const radius = size.length() / 2;
+
+    // Distance pour que la pièce tienne en hauteur ET en largeur
+    const vFov = THREE.MathUtils.degToRad(camera.fov);
+    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+    const fitDistance = radius / Math.sin(Math.min(vFov, hFov) / 2);
+
+    // ---- Réglages ----
+    const START_FACTOR = 0.8;   // distance de départ (plus petit = plus près)
+    const MIN_FACTOR = 0.25;    // zoom max
+    const MAX_FACTOR = 1.3;     // dézoom max
+    const OFFSET = new THREE.Vector3(0, 0, 0);
+    const DIR = new THREE.Vector3(1, 0.35, 1.4).normalize();
+    // ------------------
+
+    const lookAt = center.clone().add(OFFSET);
+    controls.minDistance = fitDistance * MIN_FACTOR;
+    controls.maxDistance = fitDistance * MAX_FACTOR;
+    controls.target.copy(lookAt);
+    camera.position.copy(lookAt).addScaledVector(DIR, fitDistance * START_FACTOR);
+    controls.update();
+
+    // Limite du déplacement (Shift / clic droit)
+    const panLimit = new THREE.Vector3().setScalar(radius * 0.5);
+    const panMin = center.clone().sub(panLimit);
+    const panMax = center.clone().add(panLimit);
+
+    controls.addEventListener("change", () => {
+        const t = controls.target;
+        const delta = t.clone().clamp(panMin, panMax).sub(t);
+        if (delta.lengthSq() > 0) {
+            t.add(delta);
+            camera.position.add(delta);
+        }
+    });
+}
+
+function prepareMeshes() {
+    model.traverse((child) => {
+        if (!child.isMesh) return;
+        const name = child.name || "";
+
+        // Texture
+        const material = getMaterialFor(name);
+        if (material) child.material = material;
+        if (name.includes("Screen")) child.material = new THREE.MeshBasicMaterial({ map: videoTexture });
+
+        // État initial (pour animations / hover)
+        child.userData.initialScale = child.scale.clone();
+        child.userData.initialPosition = child.position.clone();
+        child.userData.initialRotation = child.rotation.clone();
+
+        // Aiguilles de l'horloge
+        if (name.includes("Hour_Hand")) hourHand = child;
+        if (name.includes("Minute_Hand")) minuteHand = child;
+
+        // Chaise
+        if (name.includes("Chair_Top") || child.parent?.name.includes("Chair_Top")) {
+            chairTop = name.includes("Chair_Top") ? child : child.parent;
+            chairTop.userData.initialRotation ??= chairTop.rotation.clone();
+        }
+
+        // Ventilateurs
+        const lower = name.toLowerCase();
+        if (lower.includes("fan")) (lower.includes("fan_2") ? xAxisFans : yAxisFans).push(child);
+
+        // Éléments animés à l'intro
+        if (name.includes("Hanging_Plank_1")) plank1 = child;
+        else if (name.includes("Hanging_Plank_2")) plank2 = child;
+        else if (name.includes("My_Work")) workBtn = child;
+        else if (name.includes("About")) aboutBtn = child;
+        else if (name.includes("Contact")) contactBtn = child;
+
+        // Masqués avant l'intro
+        if (name.includes("Hanging_Plank_1")) child.scale.set(0, 0, 1);
+        else if (hasAny(name, HIDDEN_KEYS)) child.scale.set(0, 0, 0);
+    });
+}
+
+// =====================================================
+// MODALES
+// =====================================================
+function openModal(id) {
+    if (isModalAnimating) return;
+    isModalAnimating = true;
+
+    const modal = $(id);
+    const content = modal.querySelector(".modal-content");
+
+    modal.style.display = "flex";
+    isModalOpen = true;
+    controls.enabled = false;
+    clickSound.play();
+
+    gsap.killTweensOf([modal, content]);
+
+    const tl = gsap.timeline({
+        onComplete: () => {
+            gsap.set(content, { clearProps: "transform,opacity" });
+            isModalAnimating = false;
+        }
+    });
+
+    tl.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0)
+      .fromTo(content,
+          { scale: 0.3, y: 60, rotation: -6, opacity: 0 },
+          { scale: 1, y: 0, rotation: 0, opacity: 1, duration: 0.6, ease: "back.out(2.8)" }, 0);
+}
+
+function closeModals() {
+    if (isModalAnimating) return;
+
+    const modal = [...document.querySelectorAll(".modal")].find(m => m.style.display === "flex");
+    if (!modal) return;
+
+    isModalAnimating = true;
+    clickBlocked = true;
+    clickSound.play();
+
+    const content = modal.querySelector(".modal-content");
+    gsap.killTweensOf([modal, content]);
+
+    gsap.timeline({
+        onComplete: () => {
+            modal.style.display = "none";
+            gsap.set([modal, content], { clearProps: "all" });
+            isModalOpen = false;
+            isModalAnimating = false;
+            controls.enabled = true;
+            setTimeout(() => (clickBlocked = false), 250);
+        }
+    })
+    // Gonflement + tilt (anticipation)
+    .to(content, { scale: 1.05, rotation: -3, duration: 0.12, ease: "power2.out" })
+    // Rétrécissement avec rebond
+    .to(content, { scale: 0.2, y: 40, rotation: 6, duration: 0.4, ease: "back.in(1.8)" })
+    // Fondu du contenu
+    .to(content, { opacity: 0, duration: 0.15, ease: "none" }, "<0.25")
+    // Fondu du fond
+    .to(modal, { opacity: 0, duration: 0.3, ease: "power1.in" }, "<-0.1");
+}
+
+function setupModals() {
+    document.querySelectorAll(".closeModal").forEach(btn => btn.addEventListener("click", closeModals));
+
+    document.querySelectorAll(".modal").forEach(modal => {
+        let downOnBackdrop = false;
+        modal.addEventListener("pointerdown", e => (downOnBackdrop = e.target === modal));
+        modal.addEventListener("click", e => {
+            if (e.target === modal && downOnBackdrop) closeModals();
+            downOnBackdrop = false;
+        });
+    });
+
+    window.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeModals();
+    });
+}
+
+// =====================================================
+// INTRO
+// =====================================================
+function handleEnter() {
+    state = "running";
+    const btn = $("enter");
+
+    btn.disabled = true;
+    $("enter-silent").disabled = true;
+    Object.assign(btn.style, {
+        cursor: "default",
+        boxShadow: "none",
+        border: "4px solid #36579F",
+        background: "#7FA0E7",
+        color: "#36579F"
+    });
+    btn.dataset.i18n = "hello";
+    btn.textContent = I18N[currentLang].hello;
+    $("loading-screen").style.background = "#7FA0E7";
+    $("enter-silent").style.display = "none";
+    $("title-loading").style.display = "none";
+
+    playReveal();
+}
+
+function playReveal() {
+    gsap.timeline({
+        onComplete: () => {
+            $("loading-screen").remove();
+            isLoaded = true;
+            playIntroAnimation();
+        }
+    })
+    .to("#loading-screen", { scale: 0.5, duration: 1.2, ease: "back.in(1.8)" })
+    .to("#loading-screen", {
+        y: "200vh", rotateX: 45, rotateY: -35, transformPerspective: 1000,
+        duration: 1.2, ease: "back.in(1.8)"
+    }, "-=0.1");
+}
+
+function popIn(timeline, obj, position) {
+    timeline
+        .to(obj.scale, restoreScale(obj), position)
+        .fromTo(obj.position,
+            { y: obj.userData.initialPosition.y - 0.25 },
+            { y: obj.userData.initialPosition.y, duration: 0.5, ease: "back.out(2)" }, "<");
+}
+
+function playIntroAnimation() {
+    const tl = gsap.timeline({ defaults: { duration: 0.6, ease: "back.out(2)" } });
+    const lettersTl = gsap.timeline({ defaults: { duration: 0.6, ease: "back.out(2)" } });
+    const letters = [];
+
+    model.traverse((child) => {
+        if (!child.isMesh) return;
+        const name = child.name || "";
+        if (name.includes("_Target") || name.includes("_Raycaster")) popIn(tl, child, Math.random() * 0.5);
+        if (name.includes("_Letters")) letters.push(child);
+    });
+
+    letters.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    letters.forEach((letter, i) => popIn(lettersTl, letter, i * 0.1));
+
+    // Planches + boutons
+    const t1 = gsap.timeline({ defaults: { duration: 0.8, ease: "back.out(1.8)" } });
+    t1.timeScale(0.8);
+
+    [[plank1, undefined], [plank2, "-=0.5"], [workBtn, "-=0.6"], [aboutBtn, "-=0.6"], [contactBtn, "-=0.6"]]
+        .forEach(([obj, pos]) => obj && t1.to(obj.scale, restoreScale(obj), pos));
+
+    t1.eventCallback("onComplete", createDelayedHitboxes);
+}
+
+// =====================================================
+// HITBOXES
+// =====================================================
+function createHitboxes(root) {
+    root.traverse((obj) => {
+        if (!obj.isMesh) return;
+
+        // Remonte la hiérarchie pour trouver l'objet interactif
+        let target = obj;
+        while (target && !hasAny(target.name || "", HITBOX_KEYS)) target = target.parent;
+        if (!target) return;
+
+        if (hasAny(obj.name || "", DELAYED_KEYS)) {
+            delayedHitboxObjects.push(obj);
+            return;
+        }
+        createSingleHitbox(obj, target);
+    });
+}
+
+function createSingleHitbox(originalObj, targetObject) {
+    originalObj.updateWorldMatrix(true, false);
+    const box = new THREE.Box3().setFromObject(originalObj);
+    const size = box.getSize(new THREE.Vector3());
+
+    const hit = new THREE.Mesh(
+        new THREE.BoxGeometry(size.x, size.y, size.z),
+        new THREE.MeshBasicMaterial({ wireframe: true, color: 0xff00ff, transparent: true, opacity: 0 })
+    );
+    hit.position.copy(box.getCenter(new THREE.Vector3()));
+    hit.userData.target = targetObject || originalObj;
+
+    scene.add(hit);
+    hitboxes.push(hit);
+}
+
+function createDelayedHitboxes() {
+    delayedHitboxObjects.forEach(obj => {
+        const saved = obj.scale.clone();
+        obj.scale.copy(obj.userData.initialScale || new THREE.Vector3(1, 1, 1));
+        createSingleHitbox(obj);
+        obj.scale.copy(saved);
+    });
+    delayedHitboxObjects = [];
+}
+
+function getType(obj) {
+    for (let current = obj; current; current = current.parent) {
+        const n = current.name || "";
+        if (n.includes("_Projet")) return "projet";
+        if (n.includes("_Raycaster")) return "raycaster";
+        if (n.includes("_Target")) return "target";
+        if (n.includes("Manga")) return "manga";
+    }
+    return null;
+}
+
+// =====================================================
+// HOVER
+// =====================================================
+function applyHover(obj, hovering) {
+    if (!obj?.userData) return;
+
+    obj.userData.initialScale ??= obj.scale.clone();
+    obj.userData.initialPosition ??= obj.position.clone();
+    obj.userData.initialRotation ??= obj.rotation.clone();
+
+    const base = obj.userData.initialScale;
+    const basePos = obj.userData.initialPosition;
+    const baseRot = obj.userData.initialRotation;
+
+    gsap.killTweensOf([obj.scale, obj.position, obj.rotation]);
+
+    const type = getType(obj);
+    const name = obj.name;
+    const tiltX = (angle, ease = "back.out(2)") =>
+        gsap.to(obj.rotation, { x: baseRot.x + (hovering ? angle : 0), duration: 0.5, ease });
+
+    if (type === "manga") {
+        scaleGSAP(obj, hovering ? 1.2 : 1, 0.25);
+        gsap.to(obj.position, { y: basePos.y + (hovering ? 0.4 : 0), duration: 0.25, ease: "power2.out" });
+    } else if (type === "raycaster") {
+        scaleGSAP(obj, hovering ? 1.7 : 1);
+    } else if (name.includes("About_Button")) {
+        scaleGSAP(obj, hovering ? 1.4 : 1);
+        tiltX(-Math.PI / 10, hovering ? "back.out(2)" : "power2.out");
+    } else if (type === "projet") {
+        scaleGSAP(obj, hovering ? 1.4 : 1);
+        tiltX(Math.PI / 10);
+    } else if (type === "target") {
+        tiltX(Math.PI / 10);
+    } else if (name.includes("_Letters")) {
+        gsap.to(obj.position, { y: basePos.y + (hovering ? 0.4 : 0), duration: 0.25, ease: "power2.out" });
+    } else if (name.includes("_Linkedin") || name.includes("_Mail")) {
+        scaleGSAP(obj, hovering ? 1.3 : 1);
+    }
+}
+
+function resetHover() {
+    if (!currentHover) return;
+    applyHover(currentHover, false);
+    currentHover = null;
+}
+
+function handleHover() {
+    if (!isLoaded || isModalOpen) return;
+
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(hitboxes);
+
+    if (!hits.length) {
+        resetHover();
+        document.body.style.cursor = "default";
+        return;
+    }
+
+    const target = hits[0].object.userData.target;
+    document.body.style.cursor = hasAny(target?.name || "", POINTER_KEYS) ? "pointer" : "default";
+
+    if (target === currentHover) return;
+    resetHover();
+    currentHover = target;
+    applyHover(target, true);
+}
+
+// =====================================================
+// INTERACTIONS
+// =====================================================
+function focusCameraOn(obj) {
+    const center = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+    const camPos = center.clone().add(new THREE.Vector3(0, 3, 1));
+
+    controls.enabled = false;
+    gsap.to(camera.position, { x: camPos.x, y: camPos.y, z: camPos.z, duration: 1.2, ease: "power2.inOut" });
+    gsap.to(controls.target, {
+        x: center.x, y: center.y, z: center.z, duration: 1.2, ease: "power2.inOut",
+        onUpdate: () => controls.update(),
+        onComplete: () => (controls.enabled = true)
+    });
+}
+
+function onClick() {
+    if (isModalOpen || clickBlocked) return;
+
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(hitboxes);
+    if (!hits.length) return;
+
+    const obj = hits[0].object.userData.target;
+    const name = obj.name;
+    const lower = name.toLowerCase();
+
+    if (lower.includes("linkedin")) {
+        window.open(LINKS.linkedin, "_blank", "noopener,noreferrer");
+        return;
+    }
+    if (lower.includes("_mail")) {
+        window.location.href = LINKS.mail;
+        return;
+    }
+    if (getType(obj) === "manga") {
+        focusCameraOn(obj);
+        return;
+    }
+    if (name.includes("About")) return openModal("modal-about");
+    if (name.includes("My_Work")) return openModal("modal-work");
+    if (name.includes("Contact")) return openModal("modal-contact");
+}
+
+function onMove(e) {
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+// =====================================================
+// ANIMATION
+// =====================================================
+function updateClockHands() {
+    if (!hourHand || !minuteHand) return;
+
+    const now = new Date();
+    const h = now.getHours() % 12;
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+
+    minuteHand.rotation.x = -(m + s / 60) * (Math.PI * 2 / 60);
+    hourHand.rotation.x = -(h + m / 60) * (Math.PI * 2 / 12);
+}
+
+function updateChair() {
+    if (!chairTop?.userData.initialRotation) return;
+
+    const t = performance.now() * 0.001;
+    const amplitude = Math.PI / 8;
+    const wave = Math.sin(t * 0.5);
+    chairTop.rotation.y = chairTop.userData.initialRotation.y + amplitude * wave * (1 - Math.abs(wave) * 0.3);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    controls.update();
+    updateClockHands();
+    updateChair();
+
+    xAxisFans.forEach(fan => (fan.rotation.x -= 0.04));
+    yAxisFans.forEach(fan => (fan.rotation.y -= 0.04));
+
+    if (isLoaded) handleHover();
+    renderer.render(scene, camera);
+}
+
+// =====================================================
+// DEBUG CAMÉRA (touche L)
+// =====================================================
+const debugPanel = $("camera-debug");
+
+function updateCameraDebug() {
+    if (!camera || !controls) return;
+    const fmt = (v) => `${v.x.toFixed(3)}, ${v.y.toFixed(3)}, ${v.z.toFixed(3)}`;
+    $("cam-pos").textContent = fmt(camera.position);
+    $("cam-target").textContent = fmt(controls.target);
+    $("cam-dist").textContent = camera.position.distanceTo(controls.target).toFixed(2);
+}
+
+window.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() !== "l") return;
+
+    const show = debugPanel.style.display !== "block";
+    debugPanel.style.display = show ? "block" : "none";
+
+    clearInterval(cameraLogInterval);
+    cameraLogInterval = show ? setInterval(updateCameraDebug, 50) : null;
+});
+
+// =====================================================
+// GO
+// =====================================================
+init();
+animate();
+</script>
+
+
+
+</body></html>
