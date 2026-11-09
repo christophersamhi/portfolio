@@ -783,13 +783,19 @@ function onAssetsLoaded() {
     state = "ready";
     const btn = $("enter");
     const silentBtn = $("enter-silent");
-    btn.disabled = false;
-    silentBtn.disabled = false;
     $("title-loading").style.display = "none";
 
-    const pop = { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" };
-    gsap.fromTo(btn, { opacity: 0, scale: 0.8 }, pop);
-    gsap.fromTo(silentBtn, { opacity: 0, scale: 0.8 }, { ...pop, delay: 0.2 });
+    // Petit délai + attente de frames stables avant d'animer
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            btn.disabled = false;
+            silentBtn.disabled = false;
+
+            const pop = { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" };
+            gsap.fromTo(btn, { opacity: 0, scale: 0.8 }, pop);
+            gsap.fromTo(silentBtn, { opacity: 0, scale: 0.8 }, { ...pop, delay: 0.2 });
+        });
+    }, 500); // ← ajuste ici (en ms)
 }
 
 function enter(silent) {
