@@ -1,0 +1,5 @@
+# robotstxt.org/
+
+User-agent: *
+Allow: /
+Sitemap: https://christophersamhi.github.io/portfolio/sitemap.xml

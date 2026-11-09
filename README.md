@@ -1,40 +1,93 @@
-# 💜 수아's Award-Winning Room Folio 💜
+# Refonte Pelham media
 
-**[Live site](http://sooahs-room-folio.com/)**
 
-This repo contains code of 수아's Room Folio. If you're interested, learn how to create a porfolio like this [here](https://youtu.be/AB6sulUMRGE)!! It's beginner friendly!
 
-![Page screenshot](public/media/og-image.webp?raw=true "Page screenshot")
+## Getting started
 
-# Instructions
+To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+
+Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+
+## Add your files
+
+- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
 ```
-npm install
-npm run dev
+cd existing_repo
+git remote add origin https://gitlab.com/cviale/refonte-pelham-media.git
+git branch -M main
+git push -uf origin main
 ```
 
-# Updates & Known Issues!!!
+## Integrate with your tools
 
-- Yes you shouldn't put everything into a single main.js file, I just did it because it was a beginner course and didn't want to move a bunch of stuff around everywhere which might've been more confusing for those just starting out. I definitely recommend a better structure than the one I did. Also the SCSS is a mess do NOT look at it XD. I strongly encourage you to style it in your own unique way!
-- Don't use .ogg files because they might glitch out on iPhones. If you want to use .ogg files, make sure to also have a fallback .mp3 file that you load instead if they're on an iPhone. If you use .ogg you might not hear anything on iPhones/Safari browser.
-- There is an issue in the video's code where, at certain angles, when you hover something it starts "vibrating" or "twitching," this is because the mesh that we're using to target with our raycaster is no longer being hovered after the animation displaces/rescales the object. This triggers the tween to be "killed" and revert to its old state. When it reverts it might be rehovered which triggers the animation to play again, but that animation again makes the object no longer hovered and it keeps going back and forth. If you wanted to fix this with minimal adjustments, you can generate static invisible hitboxes for all hovered items that are passed into the raycaster for testing rather than the object itself (or you can do a combination of both, some you use the object itself, others you use a hitbox). I decided to take a dual approach, some have hitboxes, others use the default object. For the objects with intro animations, you can either create their hitboxes after the intro animation is done playing or you can generate all the hitboxes before the intro is done playing. If you do it after, the user can't interact with them until the intro is done. If you do it before, they can interact with the objects before the intro is done. There are multiple ways to handle this, you can even make the hitboxes in Blender if you want. For me I made all the static ones interactable immediately, whereas those with intro animations have their hitboxes generated after the animations are done. One issue with hitboxes is at certain angles you can't select/hover objects behind another mesh's hitbox because we're only choosing the first thing the raycast intersects. You can fix this by deciding to play a hover animation for all objects the raycaster is intersecting or checking the rotation of the camera to "guess" which one the user is actually hovering, or make a highly custom hitbox for each specific mesh that needs one in Blender, or take the dual approach I took in which the raycaster uses generated hitboxes for some objects and the default objects themselves for others. Alternatively, if you don't want a hovered state, you can simply remove the kill flag check and let it play out its animation fully.
+- [ ] [Set up project integrations](https://gitlab.com/cviale/refonte-pelham-media/-/settings/integrations)
 
-# Inspo & Credits!!!
+## Collaborate with your team
 
-- [Bruno Simon's Room](https://my-room-in-3d.vercel.app/)
-- [Rachel Wei's Room](https://rachelqrwei.ca/)
-- [Nicky Blender](https://www.instagram.com/nicky.blender/?hl=en)
-- [Denis Wipart's Materials](https://wipart.artstation.com/store). Don't worry I have commercial license hahaha.
-- [Music](https://youtu.be/eq3C1Uwz6YU)
-- [Click SFX](https://uppbeat.io/sfx/category/digital-and-ui/ui)
-- [Piano SFX](https://pixabay.com/sound-effects/all-88-keys-on-a-piano-playing-fast-free-high-quality-sound-effects-71279/)
-- [Cat Wallpaper](https://wallpapersok.com/wallpapers/kawaii-hd-smiling-cats-vmhjik4wp6ipc6bd.html)
-- [Peach Panda Wallpaper](https://4kwallpapers.com/cute/peach-cat-kawaii-10081.html)
-- [Anya Forger | Spy x Family Wallpaper](https://www.uhdpaper.com/2022/03/anya-forger-spy-x-family-4k-5061g.html?m=0)
-- [SVGs](https://www.svgrepo.com/)
-- [Fonts](https://www.fontspace.com/niskala-huruf)
+- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
+- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
+- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
+- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
 
-# Won some awards!! 🎉
+## Test and Deploy
 
-- [Awwwards](https://www.awwwards.com/sites/suas-room-folio)
-- [CSSDA](https://www.cssdesignawards.com/sites/sooahs-room-folio/47040/)
+Use the built-in continuous integration in GitLab.
+
+- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
+- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
+- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
+- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
+- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+
+***
+
+# Editing this README
+
+When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+
+## Suggestions for a good README
+
+Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+
+## Name
+Choose a self-explaining name for your project.
+
+## Description
+Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+
+## Badges
+On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+
+## Visuals
+Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+
+## Installation
+Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+## Usage
+Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+
+## Support
+Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+
+## Roadmap
+If you have ideas for releases in the future, it is a good idea to list them in the README.
+
+## Contributing
+State if you are open to contributions and what your requirements are for accepting them.
+
+For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+
+You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+
+## Authors and acknowledgment
+Show your appreciation to those who have contributed to the project.
+
+## License
+For open source projects, say how it is licensed.
+
+## Project status
+If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

@@ -1,7 +1,48 @@
 <html lang="fr"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
+
+<!-- ========== SEO : balises principales ========== -->
+<title>Christopher Samhi – Développeur Front-End | Portfolio</title>
+<meta name="description" content="Portfolio de Christopher Samhi, développeur Front-End autodidacte passionné par le web, le design et les expériences interactives 3D. Découvre mes projets et contacte-moi.">
+<meta name="author" content="Christopher Samhi">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#36579F">
+<link rel="canonical" href="https://christophersamhi.github.io/portfolio/">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- Open Graph / réseaux sociaux -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Christopher Samhi – Portfolio">
+<meta property="og:title" content="Christopher Samhi – Développeur Front-End">
+<meta property="og:description" content="Portfolio 3D interactif : projets web, design et créations d'un développeur Front-End autodidacte.">
+<meta property="og:url" content="https://christophersamhi.github.io/portfolio/">
+<meta property="og:image" content="https://christophersamhi.github.io/portfolio/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aperçu du portfolio 3D de Christopher Samhi">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Christopher Samhi – Développeur Front-End">
+<meta name="twitter:description" content="Portfolio 3D interactif : projets web, design et créations.">
+<meta name="twitter:image" content="https://christophersamhi.github.io/portfolio/img/og-image.jpg">
+
+<!-- Données structurées -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Christopher Samhi",
+  "url": "https://christophersamhi.github.io/portfolio/",
+  "jobTitle": "Développeur Front-End",
+  "description": "Développeur Front-End autodidacte, passionné par le web, le design et les expériences interactives.",
+  "knowsAbout": ["HTML", "CSS", "JavaScript", "Three.js", "GSAP", "Web design"],
+  "sameAs": ["https://www.linkedin.com/in/christopher-samhi-479672273/"]
+}
+</script>
 
 <!-- ========== Import map (une seule instance de Three.js) ========== -->
 <script type="importmap">
@@ -58,6 +99,19 @@ h3 {
 h2, h3, #enter, #enter-silent {
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
+}
+
+/* Contenu lisible par les moteurs de recherche et lecteurs d'écran (invisible à l'écran) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 #title-about,
@@ -305,6 +359,26 @@ h2, h3, #enter, #enter-silent {
 </head>
 <body>
 
+<!-- ========== Contenu sémantique pour le SEO (fidèle au contenu affiché) ========== -->
+<main class="sr-only">
+    <h1 data-i18n="seoH1">Christopher Samhi – Développeur Front-End autodidacte</h1>
+    <p data-i18n="seoIntro">Portfolio interactif en 3D : projets web, design, animations et interfaces soignées.</p>
+    <nav aria-label="Sections">
+        <ul>
+            <li data-i18n="navAbout">À propos de moi</li>
+            <li data-i18n="navWork">Mes projets</li>
+            <li data-i18n="navContact">Contact</li>
+        </ul>
+    </nav>
+    <a href="https://www.linkedin.com/in/christopher-samhi-479672273/" rel="noopener">LinkedIn</a>
+</main>
+<noscript>
+    <p style="color:#fff;font-family:sans-serif;padding:20px">
+        Ce portfolio 3D nécessite JavaScript et WebGL. Christopher Samhi, développeur Front-End autodidacte.
+        Contact : ch.samhi@outlook.fr
+    </p>
+</noscript>
+
 <!-- ========== Chargement ========== -->
 <div id="loading-screen">
     <h2 id="title-loading" data-i18n="loading">Chargement...</h2>
@@ -316,13 +390,13 @@ h2, h3, #enter, #enter-silent {
 <button class="lang-toggle-button" id="lang-toggle" aria-label="Change language">EN</button>
 
 <!-- ========== Bouton son ========== -->
-<button class="mute-toggle-button">
-    <svg class="sound-svg sound-off-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<button class="mute-toggle-button" aria-label="Son">
+    <svg class="sound-svg sound-off-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M366.064 567.04C430.064 624 508.464 663.04 545.584 650.56C612.784 625.6 623.984 490.557 623.984 397.117C623.984 371.197 623.984 341.76 620.464 312.641" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M596.134 200.963C592.038 188.521 585.44 177.047 576.746 167.252C568.051 157.456 557.443 149.545 545.578 144.002C506.218 129.282 422.698 175.999 353.578 237.119H302.375C268.427 237.119 235.87 250.606 211.865 274.611C187.86 298.616 174.375 331.171 174.375 365.12V429.12C174.365 453.795 181.488 477.952 194.887 498.672C208.285 519.395 227.387 535.802 249.894 545.92" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M720 77.4414L80 717.44" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>
-    <svg class="sound-svg sound-on-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="sound-svg sound-on-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M417.578 144.002C378.218 129.282 294.696 175.999 225.576 237.119H174.375C140.427 237.119 107.87 250.606 83.8653 274.611C59.8605 298.616 46.375 331.171 46.375 365.12V429.12C46.375 463.066 59.8605 495.626 83.8653 519.632C107.87 543.635 140.427 557.12 174.375 557.12H225.576C293.096 619.2 376.618 664.96 417.578 650.56C484.778 625.6 495.974 490.56 495.974 397.12C495.974 303.679 484.778 168.962 417.578 144.002Z" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M677.127 215.039C725.098 263.044 752.049 328.134 752.049 396C752.049 463.866 725.098 528.957 677.127 576.96" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M609.252 510.4C639.246 480.394 656.097 439.703 656.097 397.277C656.097 354.851 639.246 314.165 609.252 284.16" stroke-width="85" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -377,21 +451,23 @@ h2, h3, #enter, #enter-silent {
         <h2 id="title-work" data-i18n="workTitle">Mes projets</h2>
         <div class="modal-content-wrapper">
             <div class="swiper mySwiper">
+                <!-- Les attributs alt sont définis par PROJECT_ALTS dans le script (FR/EN) -->
+                <!-- Adapte width/height aux dimensions réelles de tes images -->
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="./img/projet-1.webp" alt="Projet 1" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-2.webp" alt="Projet 2" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-3.webp" alt="Projet 3" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-4.webp" alt="Projet 4" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-5.webp" alt="Projet 5" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-6.webp" alt="Projet 6" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-7.webp" alt="Projet 7" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-8.webp" alt="Projet 8" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-9.webp" alt="Projet 9" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-10.webp" alt="Projet 10" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-11.webp" alt="Projet 11" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-12.webp" alt="Projet 12" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-13.webp" alt="Projet 13" loading="lazy" decoding="async"></div>
-                    <div class="swiper-slide"><img src="./img/projet-14.webp" alt="Projet 14" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-1.webp" alt="Projet 1" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-2.webp" alt="Projet 2" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-3.webp" alt="Projet 3" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-4.webp" alt="Projet 4" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-5.webp" alt="Projet 5" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-6.webp" alt="Projet 6" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-7.webp" alt="Projet 7" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-8.webp" alt="Projet 8" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-9.webp" alt="Projet 9" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-10.webp" alt="Projet 10" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-11.webp" alt="Projet 11" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-12.webp" alt="Projet 12" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-13.webp" alt="Projet 13" width="1280" height="720" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-14.webp" alt="Projet 14" width="1280" height="720" loading="lazy" decoding="async"></div>
                 </div>
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
@@ -490,10 +566,56 @@ const HIDDEN_KEYS = ["Hanging_Plank_2", "My_Work", "About", "Contact", "_Projet"
 const POINTER_KEYS = ["_Target", "_Projet", "_Linkedin", "_Mail"];
 
 // =====================================================
+// DESCRIPTIONS DES PROJETS (attributs alt des images, bon pour le SEO)
+// ⚠️ Remplace ces textes par une vraie description de chaque projet
+// =====================================================
+const PROJECT_ALTS = {
+    fr: [
+        "Projet web 1 – maquette responsive par Christopher Samhi, développeur Front-End",
+        "Projet web 2 – interface soignée par Christopher Samhi, développeur Front-End",
+        "Projet web 3 – site vitrine par Christopher Samhi, développeur Front-End",
+        "Projet web 4 – design d'interface par Christopher Samhi, développeur Front-End",
+        "Projet web 5 – page d'accueil par Christopher Samhi, développeur Front-End",
+        "Projet web 6 – site interactif par Christopher Samhi, développeur Front-End",
+        "Projet web 7 – application web par Christopher Samhi, développeur Front-End",
+        "Projet web 8 – intégration responsive par Christopher Samhi, développeur Front-End",
+        "Projet web 9 – animations web par Christopher Samhi, développeur Front-End",
+        "Projet web 10 – interface utilisateur par Christopher Samhi, développeur Front-End",
+        "Projet web 11 – site web par Christopher Samhi, développeur Front-End",
+        "Projet web 12 – création web par Christopher Samhi, développeur Front-End",
+        "Projet web 13 – design web par Christopher Samhi, développeur Front-End",
+        "Projet web 14 – réalisation Front-End par Christopher Samhi"
+    ],
+    en: [
+        "Web project 1 – responsive mockup by Christopher Samhi, Front-End developer",
+        "Web project 2 – polished interface by Christopher Samhi, Front-End developer",
+        "Web project 3 – showcase website by Christopher Samhi, Front-End developer",
+        "Web project 4 – interface design by Christopher Samhi, Front-End developer",
+        "Web project 5 – landing page by Christopher Samhi, Front-End developer",
+        "Web project 6 – interactive website by Christopher Samhi, Front-End developer",
+        "Web project 7 – web application by Christopher Samhi, Front-End developer",
+        "Web project 8 – responsive integration by Christopher Samhi, Front-End developer",
+        "Web project 9 – web animations by Christopher Samhi, Front-End developer",
+        "Web project 10 – user interface by Christopher Samhi, Front-End developer",
+        "Web project 11 – website by Christopher Samhi, Front-End developer",
+        "Web project 12 – web creation by Christopher Samhi, Front-End developer",
+        "Web project 13 – web design by Christopher Samhi, Front-End developer",
+        "Web project 14 – Front-End work by Christopher Samhi"
+    ]
+};
+
+// =====================================================
 // TRADUCTIONS (FR / EN)
 // =====================================================
 const I18N = {
     fr: {
+        pageTitle: "Christopher Samhi – Développeur Front-End | Portfolio",
+        pageDesc: "Portfolio de Christopher Samhi, développeur Front-End autodidacte passionné par le web, le design et les expériences interactives 3D. Découvre mes projets et contacte-moi.",
+        seoH1: "Christopher Samhi – Développeur Front-End autodidacte",
+        seoIntro: "Portfolio interactif en 3D : projets web, design, animations et interfaces soignées.",
+        navAbout: "À propos de moi",
+        navWork: "Mes projets",
+        navContact: "Contact",
         loading: "Chargement...",
         enter: "Entrer",
         enterSilent: "Entrer (sans son)",
@@ -518,10 +640,18 @@ const I18N = {
         contactSub: "Une idée en tête ? Parlons-en !",
         project: "Projet",
         close: "Fermer",
+        sound: "Son",
         langBtn: "EN",
         langAria: "Passer le site en anglais"
     },
     en: {
+        pageTitle: "Christopher Samhi – Front-End Developer | Portfolio",
+        pageDesc: "Portfolio of Christopher Samhi, a self-taught Front-End developer passionate about the web, design and interactive 3D experiences. Discover my projects and get in touch.",
+        seoH1: "Christopher Samhi – Self-taught Front-End developer",
+        seoIntro: "Interactive 3D portfolio: web projects, design, animations and polished interfaces.",
+        navAbout: "About me",
+        navWork: "My projects",
+        navContact: "Contact",
         loading: "Loading...",
         enter: "Enter",
         enterSilent: "Enter (without sound)",
@@ -546,6 +676,7 @@ const I18N = {
         contactSub: "Got an idea in mind? Let's talk!",
         project: "Project",
         close: "Close",
+        sound: "Sound",
         langBtn: "FR",
         langAria: "Switch the site to French"
     }
@@ -622,15 +753,23 @@ function applyLang(lang) {
 
     document.documentElement.lang = lang;
 
+    // SEO : titre et description mis à jour selon la langue
+    document.title = t.pageTitle;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", t.pageDesc);
+
     document.querySelectorAll("[data-i18n]").forEach(el => {
         const value = t[el.dataset.i18n];
         if (value !== undefined) el.textContent = value;
     });
 
+    // Textes alternatifs descriptifs des projets
+    const alts = PROJECT_ALTS[lang];
     document.querySelectorAll(".swiper-slide img").forEach((img, i) => {
-        img.alt = `${t.project} ${i + 1}`;
+        img.alt = alts[i] || `${t.project} ${i + 1}`;
     });
     document.querySelectorAll(".closeModal").forEach(btn => btn.setAttribute("aria-label", t.close));
+    document.querySelector(".mute-toggle-button")?.setAttribute("aria-label", t.sound);
 
     const langBtn = $("lang-toggle");
     langBtn.textContent = t.langBtn;
