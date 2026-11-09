@@ -3,8 +3,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio</title>
 
+<!-- ========== Import map (une seule instance de Three.js) ========== -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/"
+  }
+}
+</script>
+
+<!-- ========== Préchargements ========== -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="">
+<link rel="preload" href="scene.glb" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/loaders/GLTFLoader.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/loaders/DRACOLoader.js">
+<link rel="modulepreload" href="./util/OrbitControls.js">
+
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&amp;family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
@@ -281,6 +299,9 @@ h2, h3, #enter, #enter-silent {
     z-index: 10000;
 }
 </style>
+
+<!-- Swiper : non bloquant (s'exécute avant le module, dans l'ordre du document) -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer=""></script>
 </head>
 <body>
 
@@ -357,20 +378,20 @@ h2, h3, #enter, #enter-silent {
         <div class="modal-content-wrapper">
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="./img/projet-1.webp" alt="Projet 1"></div>
-                    <div class="swiper-slide"><img src="./img/projet-2.webp" alt="Projet 2"></div>
-                    <div class="swiper-slide"><img src="./img/projet-3.webp" alt="Projet 3"></div>
-                    <div class="swiper-slide"><img src="./img/projet-4.webp" alt="Projet 4"></div>
-                    <div class="swiper-slide"><img src="./img/projet-5.webp" alt="Projet 5"></div>
-                    <div class="swiper-slide"><img src="./img/projet-6.webp" alt="Projet 6"></div>
-                    <div class="swiper-slide"><img src="./img/projet-7.webp" alt="Projet 7"></div>
-                    <div class="swiper-slide"><img src="./img/projet-8.webp" alt="Projet 8"></div>
-                    <div class="swiper-slide"><img src="./img/projet-9.webp" alt="Projet 9"></div>
-                    <div class="swiper-slide"><img src="./img/projet-10.webp" alt="Projet 10"></div>
-                    <div class="swiper-slide"><img src="./img/projet-11.webp" alt="Projet 11"></div>
-                    <div class="swiper-slide"><img src="./img/projet-12.webp" alt="Projet 12"></div>
-                    <div class="swiper-slide"><img src="./img/projet-13.webp" alt="Projet 13"></div>
-                    <div class="swiper-slide"><img src="./img/projet-14.webp" alt="Projet 14"></div>
+                    <div class="swiper-slide"><img src="./img/projet-1.webp" alt="Projet 1" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-2.webp" alt="Projet 2" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-3.webp" alt="Projet 3" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-4.webp" alt="Projet 4" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-5.webp" alt="Projet 5" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-6.webp" alt="Projet 6" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-7.webp" alt="Projet 7" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-8.webp" alt="Projet 8" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-9.webp" alt="Projet 9" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-10.webp" alt="Projet 10" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-11.webp" alt="Projet 11" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-12.webp" alt="Projet 12" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-13.webp" alt="Projet 13" loading="lazy" decoding="async"></div>
+                    <div class="swiper-slide"><img src="./img/projet-14.webp" alt="Projet 14" loading="lazy" decoding="async"></div>
                 </div>
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
@@ -413,16 +434,12 @@ h2, h3, #enter, #enter-silent {
     Dist: <span id="cam-dist">0</span>
 </div>
 
-<script type="importmap">
-{"imports":{"three":"https://unpkg.com/three@0.179.1/build/three.module.js"}}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 <script type="module">
 import { Howl } from "https://cdn.jsdelivr.net/npm/howler@2.2.4/+esm";
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.179.1/+esm';
+import * as THREE from 'three';
 import { OrbitControls } from './util/OrbitControls.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm';
 
 // =====================================================
@@ -435,6 +452,9 @@ const LINKS = {
 
 const MUSIC_VOLUME = 0.4;
 const CLICK_VOLUME = 0.2;
+const MAX_PIXEL_RATIO = 2;
+const ANISOTROPY = 8;
+const DRACO_DECODER_PATH = "https://www.gstatic.com/draco/versioned/decoders/1.5.7/";
 
 // Ordre important : le premier nom trouvé dans le mesh gagne
 const TEXTURES = [
@@ -542,6 +562,8 @@ let currentHover = null;
 let state = "loading";
 let isLoaded = false, isModalOpen = false, isModalAnimating = false, clickBlocked = false;
 let isMuted = false;
+let hoverDirty = true;          // le raycast de survol ne tourne que si nécessaire
+let swiperInstance = null;      // créé à la première ouverture de la modale
 let cameraLogInterval = null;
 let currentLang = "fr";
 
@@ -576,6 +598,12 @@ function getBoxWithoutBackground(root) {
     });
     return box;
 }
+
+// =====================================================
+// LOADING MANAGER (GLB + textures comptés ensemble)
+// =====================================================
+const manager = new THREE.LoadingManager();
+manager.onLoad = onAssetsLoaded;
 
 // =====================================================
 // LANGUE
@@ -620,7 +648,7 @@ function toggleLang(e) {
 // =====================================================
 // TEXTURES & MATÉRIAUX
 // =====================================================
-const textureLoader = new THREE.TextureLoader();
+const textureLoader = new THREE.TextureLoader(manager);
 
 const materials = TEXTURES.map(([key, file]) => {
     const map = textureLoader.load(`textures/${file}`);
@@ -628,7 +656,7 @@ const materials = TEXTURES.map(([key, file]) => {
     map.colorSpace = THREE.SRGBColorSpace;
     map.minFilter = THREE.LinearMipMapLinearFilter;
     map.magFilter = THREE.LinearFilter;
-    map.anisotropy = 16;
+    map.anisotropy = ANISOTROPY;
     return [key, new THREE.MeshStandardMaterial({ map, roughness: 0.65, metalness: 0.05 })];
 });
 
@@ -638,23 +666,33 @@ function getMaterialFor(name) {
 }
 
 // =====================================================
-// SWIPER
+// SWIPER (initialisé à la première ouverture de la modale)
 // =====================================================
-new Swiper(".mySwiper", {
-    loop: true,
-    speed: 600,
-    spaceBetween: 20,
-    grabCursor: true,
-    keyboard: { enabled: true },
-    pagination: { el: ".swiper-pagination", clickable: true },
-    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
-});
+function initSwiper() {
+    if (swiperInstance || typeof Swiper === "undefined") return;
+    swiperInstance = new Swiper(".mySwiper", {
+        loop: true,
+        speed: 600,
+        spaceBetween: 20,
+        grabCursor: true,
+        keyboard: { enabled: true },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+    });
+}
 
 // =====================================================
 // AUDIO
 // =====================================================
 const clickSound = new Howl({ src: ["audio/bubble.ogg"], preload: true, volume: CLICK_VOLUME });
-const backgroundMusic = new Howl({ src: ["audio/musique.mp3"], loop: true, volume: MUSIC_VOLUME });
+// Musique en streaming (html5) et chargée seulement au premier play()
+const backgroundMusic = new Howl({
+    src: ["audio/musique.mp3"],
+    loop: true,
+    volume: MUSIC_VOLUME,
+    html5: true,
+    preload: false
+});
 const muteToggleButton = document.querySelector(".mute-toggle-button");
 
 function updateMuteIcon() {
@@ -687,6 +725,7 @@ function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 200);
     renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
@@ -700,6 +739,8 @@ function init() {
     controls.panSpeed = 0.6;
     controls.zoomToCursor = true;
     controls.zoomSpeed = 1.5;
+    // Le survol doit être recalculé quand la caméra bouge
+    controls.addEventListener("change", () => { hoverDirty = true; });
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.7));
     const light = new THREE.DirectionalLight(0xffffff, 1.7);
@@ -709,9 +750,17 @@ function init() {
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
-    const manager = new THREE.LoadingManager();
-    manager.onLoad = onAssetsLoaded;
-    new GLTFLoader(manager).load("scene.glb", onModelLoaded);
+    // Draco : le décodeur est préchargé en parallèle du GLB
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(DRACO_DECODER_PATH);
+    dracoLoader.preload();
+
+    const gltfLoader = new GLTFLoader(manager);
+    gltfLoader.setDRACOLoader(dracoLoader);
+    gltfLoader.load("scene.glb", (gltf) => {
+        onModelLoaded(gltf);
+        dracoLoader.dispose(); // libère les workers de décodage
+    });
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("click", onClick);
@@ -749,6 +798,10 @@ function enter(silent) {
     backgroundMusic.volume(silent ? 0 : MUSIC_VOLUME);
     clickSound.mute(silent);
     updateMuteIcon();
+
+    // La vidéo ne démarre qu'à l'entrée (elle est préchargée, pas lue)
+    if (video) video.play().catch(() => { /* autoplay refusé : ignoré */ });
+
     handleEnter();
     if (!silent) backgroundMusic.play();
 }
@@ -776,10 +829,10 @@ function setupVideo() {
         crossOrigin: "anonymous",
         loop: true,
         muted: true,
-        autoplay: true,
-        playsInline: true
+        playsInline: true,
+        preload: "auto"
     });
-    video.play();
+    video.load(); // précharge sans lire (la lecture démarre dans enter())
 
     videoTexture = new THREE.VideoTexture(video);
     videoTexture.flipY = false;
@@ -884,6 +937,9 @@ function openModal(id) {
     controls.enabled = false;
     clickSound.play();
 
+    // Swiper : créé à la première ouverture (modale visible = bonnes dimensions)
+    if (id === "modal-work") initSwiper();
+
     gsap.killTweensOf([modal, content]);
 
     const tl = gsap.timeline({
@@ -919,6 +975,7 @@ function closeModals() {
             isModalOpen = false;
             isModalAnimating = false;
             controls.enabled = true;
+            hoverDirty = true;
             setTimeout(() => (clickBlocked = false), 250);
         }
     })
@@ -979,6 +1036,7 @@ function playReveal() {
         onComplete: () => {
             $("loading-screen").remove();
             isLoaded = true;
+            hoverDirty = true;
             playIntroAnimation();
         }
     })
@@ -1066,6 +1124,7 @@ function createDelayedHitboxes() {
         obj.scale.copy(saved);
     });
     delayedHitboxObjects = [];
+    hoverDirty = true;
 }
 
 function getType(obj) {
@@ -1128,6 +1187,7 @@ function resetHover() {
 
 function handleHover() {
     if (!isLoaded || isModalOpen) return;
+    hoverDirty = false;
 
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(hitboxes);
@@ -1194,12 +1254,15 @@ function onClick() {
 function onMove(e) {
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    hoverDirty = true;
 }
 
 function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    hoverDirty = true;
 }
 
 // =====================================================
@@ -1236,7 +1299,8 @@ function animate() {
     xAxisFans.forEach(fan => (fan.rotation.x -= 0.04));
     yAxisFans.forEach(fan => (fan.rotation.y -= 0.04));
 
-    if (isLoaded) handleHover();
+    // Raycast de survol uniquement si la souris ou la caméra a bougé
+    if (isLoaded && hoverDirty) handleHover();
     renderer.render(scene, camera);
 }
 
