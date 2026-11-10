@@ -148,7 +148,7 @@ h2, h3, #enter, #enter-silent {
     overflow: hidden;
 }
 
-#enter, #enter-silent {
+#enter {
     opacity: 0;
     margin: 10px 0;
     padding: 14px 40px;
@@ -158,13 +158,48 @@ h2, h3, #enter, #enter-silent {
     color: #F4F8FF;
     font-size: 18px;
     cursor: default;
-    transition: transform .4s var(--ease-pop), background .3s, color .3s, border-color .3s;
+    transition: transform .4s, background .3s, color .3s, border-color .3s;
 }
-#enter:hover, #enter-silent:hover {
+
+#enter-silent {
+    opacity: 0;
+    color: #F4F8FF;
+    font-size: 18px;
+    cursor: default;
+    transition: transform .4s;
+    border: 0;
+    background: none;
+    position: absolute;
+    bottom: 150px;
+    z-index: 1;
+}
+
+#enter-silent::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #ffffff;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .35s;
+}
+#enter:hover {
     transform: scale(1.12);
     background: #6B92E4;
     border-color: #AFC8FF;
     cursor: pointer;
+}
+
+#enter-silent:hover {
+    transform: scale(1.12);
+    cursor: pointer;
+}
+
+#enter-silent:hover::after {
+    transform: scaleX(1);
 }
 
 /* ========== Modales ========== */
@@ -302,6 +337,7 @@ h2, h3, #enter, #enter-silent {
 .swiper {
     margin-top: 20px;
     border-radius: 12px;
+    max-height: 550px;
 }
 .swiper-slide {
     display: flex;
@@ -553,7 +589,7 @@ const TEXTURES = [
     ["Zizi", "zizi.webp"],
     ["bakenew1", "bakenew1.webp"],
     ["bakenew2", "bakenew2.webp"],
-    ["bakenew3", "bakenew3.webp"]
+    ["bakenew3", "bakenew3.webp"],
 ];
 
 // Objets qui reçoivent une hitbox
